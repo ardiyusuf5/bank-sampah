@@ -1,0 +1,27 @@
+.artikel-card{
+
+    transition:.3s;
+    border-radius:18px;
+    overflow:hidden;
+
+}
+
+.artikel-card:hover{
+
+    transform:translateY(-6px);
+    box-shadow:0 .75rem 1.5rem rgba(0,0,0,.12);
+
+}
+
+.artikel-img{
+
+    height:220px;
+    object-fit:cover;
+
+}
+
+.card-title{
+
+    line-height:1.4;
+
+}
