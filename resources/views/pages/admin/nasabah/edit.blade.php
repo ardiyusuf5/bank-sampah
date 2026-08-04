@@ -19,6 +19,15 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                 <form action="{{ route('admin.nasabah.update', $nasabah->id) }}" method="POST">
                     @csrf
                     @method('PUT')
@@ -34,7 +43,7 @@
                                         value="{{ $nasabah->no_registrasi }}" readonly>
                                 </div>
                             </div>
-                            <div class="col-6">
+                            {{-- <div class="col-6">
                                 <div class="form-group">
                                     <label for="nik">NIK</label>
                                     <input type="text" id="nik"
@@ -45,7 +54,7 @@
                                     @enderror
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="form-group">
                             <label for="nama_lengkap">Nama Lengkap</label>
                             <input type="text" id="nama_lengkap"
@@ -55,7 +64,7 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
                                     <label for="jenis_kelamin">Jenis Kelamin</label>
@@ -146,7 +155,7 @@
                                         password.</small>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="form-group">
                             <label for="alamat_lengkap">Alamat Lengkap</label>
                             <textarea class="form-control @error('alamat_lengkap') is-invalid @enderror" data-height="150" name="alamat_lengkap"
@@ -154,7 +163,7 @@
                             @error('alamat_lengkap')
                                 <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
                             @enderror
-                        </div>
+                        {{-- </div>
                         <div class="form-group">
                             <label for="status">Status</label>
                             <select id="status" class="form-control" name="status" required>
@@ -163,7 +172,7 @@
                                 <option value="tidak_aktif" {{ $nasabah->status == 'tidak_aktif' ? 'selected' : '' }}>
                                     Tidak Aktif</option>
                             </select>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="card-footer text-right">
                         <button type="submit" class="btn btn-primary">Simpan</button>

@@ -44,7 +44,7 @@
                         <table class="table table-hover table-bordered table-head-bg-primary">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>No</th>
                                     <th>Nama</th>
                                     <th>Alamat</th>
                                     <th>Kontak</th>

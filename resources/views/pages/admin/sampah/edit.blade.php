@@ -36,14 +36,14 @@
                             <input type="number" step="0.01" class="form-control" name="harga_per_kg"
                                 value="{{ $sampah->harga_per_kg }}" required>
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label>Gambar</label>
                             <input type="file" class="form-control" name="gambar" accept="image/*">
                             @if ($sampah->gambar)
                                 <img src="{{ asset('storage/sampah/' . $sampah->gambar) }}" alt="Gambar Sampah"
                                     class="img-thumbnail mt-3" width="150">
                             @endif
-                        </div>
+                        </div> --}}
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Simpan</button>
                             <a href="{{ route('admin.sampah.index') }}" class="btn btn-secondary">Batal</a>

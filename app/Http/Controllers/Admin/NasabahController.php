@@ -48,18 +48,20 @@ class NasabahController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'no_registrasi' => 'required|unique:nasabah,no_registrasi',
             'nama_lengkap' => 'required|string|max:255',
             'alamat_lengkap' => 'required|string',
-            'no_hp' => 'required|string|max:15',
-            'nik' => 'required|digits:16|unique:nasabah,nik',
-            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-            'tempat_lahir' => 'required|string|max:100',
-            'tanggal_lahir' => 'required|date',
-            'email' => 'required|email', // Mengizinkan email yang sama
-            'username' => 'required|string|unique:nasabah,username|max:255',
-            'password' => 'required|string|min:8',
+            'no_hp' => 'nullable|string|max:15',
+            'nik' => 'nullable|digits:16|unique:nasabah,nik',
+            'jenis_kelamin' => 'nullable|in:Laki-laki,Perempuan',
+            'tempat_lahir' => 'nullable|string|max:100',
+            'tanggal_lahir' => 'nullable|date',
+            'email' => 'nullable|email',
+            'username' => 'nullable|string|unique:nasabah,username|max:255', // Diubah ke required agar login tidak error
+            'password' => 'nullable|string|min:8',
+            'status' => 'nullable|in:aktif,tidak_aktif',
         ]);
 
         $nasabah = Nasabah::create([
@@ -131,15 +133,15 @@ class NasabahController extends Controller
             'no_registrasi' => 'required|unique:nasabah,no_registrasi,' . $nasabah->id,
             'nama_lengkap' => 'required|string|max:255',
             'alamat_lengkap' => 'required|string',
-            'no_hp' => 'required|string|max:15',
-            'nik' => 'required|digits:16|unique:nasabah,nik,' . $nasabah->id,
-            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-            'tempat_lahir' => 'required|string|max:100',
-            'tanggal_lahir' => 'required|date',
-            'email' => 'required|email',
-            'username' => 'required|string|unique:nasabah,username,' . $nasabah->id . '|max:255',
+            'no_hp' => 'nullable|string|max:15',
+            'nik' => 'nullable|digits:16|unique:nasabah,nik,' . $nasabah->id,
+            'jenis_kelamin' => 'nullable|in:Laki-laki,Perempuan',
+            'tempat_lahir' => 'nullable|string|max:100',
+            'tanggal_lahir' => 'nullable|date',
+            'email' => 'nullable|email',
+            'username' => 'nullable|string|unique:nasabah,username,' . $nasabah->id . '|max:255',
             'password' => 'nullable|string|min:8',
-            'status' => 'required|in:aktif,tidak_aktif',
+            'status' => 'nullable|in:aktif,tidak_aktif',
         ]);
 
         $nasabah->update([
@@ -153,7 +155,7 @@ class NasabahController extends Controller
             'tanggal_lahir' => $request->tanggal_lahir,
             'email' => $request->email,
             'username' => $request->username,
-            'status' => $request->status,
+            'status' => $request->status ?? $nasabah->status,
         ]);
 
         if ($request->filled('password')) {

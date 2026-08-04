@@ -36,7 +36,7 @@
                         <thead>
 
                             <tr>
-                                <th width="5%">#</th>
+                                <th width="5%">No</th>
                                 <th width="25%">Judul</th>
                                 <th width="15%">Kategori</th>
                                 <th width="20%">Deskripsi</th>
@@ -65,7 +65,7 @@
                                         {{ $video->kategori }}
                                     </span>
                                 </td>
-                                
+
                                 <td>
                                     {{ $video->deskripsi }}
                                 </td>

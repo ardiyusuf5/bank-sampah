@@ -14,17 +14,17 @@ return new class extends Migration
         Schema::create('nasabah', function (Blueprint $table) {
             $table->id();
             $table->string('no_registrasi');
-            $table->string('nik');
+            $table->string('nik')->nullable();
             $table->string('nama_lengkap');
-            $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan']);
-            $table->string('tempat_lahir');
-            $table->date('tanggal_lahir');
-            $table->string('no_hp');
-            $table->string('email')->unique();
-            $table->string('username')->unique();
-            $table->string('password');
-            $table->text('alamat_lengkap');
-            $table->string('foto')->default('profil.png');
+            $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan'])->nullable();
+            $table->string('tempat_lahir')->nullable();
+            $table->date('tanggal_lahir')->nullable();
+            $table->string('no_hp')->nullable();
+            $table->string('email')->unique()->nullable();
+            $table->string('username')->unique()->nullable();
+            $table->string('password')->nullable();
+            $table->text('alamat_lengkap')->nullable();
+            $table->string('foto')->default('profil.png')->nullable();
             $table->enum('status', ['aktif', 'tidak_aktif'])->default('aktif');
             $table->timestamps();
         });

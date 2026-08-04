@@ -46,12 +46,12 @@
                         <table class="table table-hover table-bordered table-head-bg-primary">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th>No</th>
                                     <th>Nama</th>
-                                    <th>No. Registrasi</th>
-                                    <th>No. HP</th>
+                                    {{-- <th>No. Registrasi</th> --}}
+                                    {{-- <th>No. HP</th> --}}
                                     <th>Saldo</th>
-                                    <th>Status</th>
+                                    {{-- <th>Status</th> --}}
                                     <th style="width: 250px">Aksi</th>
                                 </tr>
                             </thead>
@@ -60,16 +60,16 @@
                                     <tr>
                                         <td>{{ $nasabahs->firstItem() + $index }}</td>
                                         <td>{{ $nasabah->nama_lengkap }}</td>
-                                        <td>{{ $nasabah->no_registrasi }}</td>
-                                        <td>{{ $nasabah->no_hp }}</td>
+                                        {{-- <td>{{ $nasabah->no_registrasi }}</td> --}}
+                                        {{-- <td>{{ $nasabah->no_hp }}</td> --}}
                                         <td>Rp{{ number_format($nasabah->saldo->saldo, 0, ',', '.') }}</td>
-                                        <td>
+                                        {{-- <td>
                                             @if ($nasabah->status === 'aktif')
                                                 <span class="badge bg-success text-white">Aktif</span>
                                             @else
                                                 <span class="badge bg-danger text-white">Tidak Aktif</span>
                                             @endif
-                                        </td>
+                                        </td> --}}
                                         <td>
                                             <div class="d-flex justify-content-start">
                                                 <a href="{{ route('admin.nasabah.show', $nasabah->id) }}"

@@ -114,7 +114,7 @@ class TransaksiController extends Controller
         }
 
         // Redirect ke halaman cetak nota transaksi
-        return redirect()->route('admin.transaksi.print', ['transaksi' => $transaksi->id])
+        return redirect()->route('admin.transaksi.index', ['transaksi' => $transaksi->id])
             ->with([
                 'success' => 'Transaksi berhasil disimpan',
                 'transaksi_id' => $transaksi->id,

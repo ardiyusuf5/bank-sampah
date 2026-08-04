@@ -28,10 +28,10 @@
                         <table class="table table-hover table-bordered table-head-bg-primary">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th>No</th>
                                     <th>Nama Sampah</th>
                                     <th>Harga per Kg</th>
-                                    <th>Gambar</th>
+                                    {{-- <th>Gambar</th> --}}
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -41,14 +41,14 @@
                                         <td>{{ $sampahs->firstItem() + $index }}</td>
                                         <td>{{ $sampah->nama_sampah }}</td>
                                         <td>Rp{{ number_format($sampah->harga_per_kg, 2, ',', '.') }}</td>
-                                        <td>
+                                        {{-- <td>
                                             @if ($sampah->gambar)
                                                 <img src="{{ asset('storage/sampah/' . $sampah->gambar) }}"
                                                     alt="{{ $sampah->nama_sampah }}" style="width: 150px; height: auto;">
                                             @else
                                                 -
                                             @endif
-                                        </td>
+                                        </td> --}}
                                         <td>
                                             <form onsubmit="return confirm('Apakah Anda yakin?');"
                                                 action="{{ route('admin.sampah.destroy', $sampah->id) }}" method="POST">

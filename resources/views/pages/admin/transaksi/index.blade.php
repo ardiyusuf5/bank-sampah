@@ -47,7 +47,7 @@
                         <table class="table table-hover table-bordered table-head-bg-primary">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th>No</th>
                                     <th>Tanggal Setoran</th>
                                     <th>Nama Nasabah</th>
                                     <th>Berat (kg)</th>

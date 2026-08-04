@@ -63,80 +63,43 @@ class TransaksiController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi input dari form
-        $request->validate([
-            'kode_transaksi' => 'required|string|unique:transaksi,kode_transaksi',
-            'nasabah_id' => 'required|exists:nasabah,id',
-            'tanggal_transaksi' => 'required|date',
-            'detail_transaksi' => 'required|array|min:1',
-            'detail_transaksi.*.sampah_id' => 'required|exists:sampah,id',
-            'detail_transaksi.*.berat_kg' => 'required|numeric|min:0',
-            'detail_transaksi.*.harga_per_kg' => 'required|numeric|min:0',
-        ]);
+        // === TARUH DEBUG DI SINI ===
+        // Jika ingin melihat data apa saja yang masuk dari form:
+        // dd($request->all());
 
-        // Ambil ID petugas dari sesi pengguna yang sedang login
-        $petugas_id = auth()->user()->id;
-
-        // Simpan transaksi utama
-        $transaksi = Transaksi::create([
-            'kode_transaksi' => $request->kode_transaksi,
-            'nasabah_id' => $request->nasabah_id,
-            'petugas_id' => $petugas_id,
-            'tanggal_transaksi' => $request->tanggal_transaksi,
-        ]);
-
-        $totalTransaksi = 0; // Untuk menghitung total nilai transaksi
-
-        // Iterasi detail transaksi
-        foreach ($request->detail_transaksi as $detail) {
-            $hargaTotal = $detail['berat_kg'] * $detail['harga_per_kg'];
-            $totalTransaksi += $hargaTotal;
-
-            // Simpan detail transaksi
-            DetailTransaksi::create([
-                'transaksi_id' => $transaksi->id,
-                'sampah_id' => $detail['sampah_id'],
-                'berat_kg' => $detail['berat_kg'],
-                'harga_per_kg' => $detail['harga_per_kg'],
-                'harga_total' => $hargaTotal,
+        try {
+            $request->validate([
+                'no_registrasi'  => 'required|string|unique:nasabah,no_registrasi',
+                'nama_lengkap'   => 'required|string|max:255',
+                'alamat_lengkap' => 'required|string',
             ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Jika validasi gagal, ini akan MENGHENTIKAN redirect dan MENAMPILKAN pesan error pastinya di layar!
+            dd($e->errors());
         }
 
-        // Perbarui saldo nasabah
-        $saldo = Saldo::where('nasabah_id', $request->nasabah_id)->first();
-        if ($saldo) {
-            $saldo->increment('saldo', $totalTransaksi);
-        } else {
+        try {
+            $data = [
+                'no_registrasi'  => $request->no_registrasi,
+                'nama_lengkap'   => $request->nama_lengkap,
+                'alamat_lengkap' => $request->alamat_lengkap,
+                'status'         => 'aktif',
+            ];
+
+            $nasabah = Nasabah::create($data);
+
             Saldo::create([
-                'nasabah_id' => $request->nasabah_id,
-                'saldo' => $totalTransaksi,
+                'nasabah_id' => $nasabah->id,
+                'saldo'      => 0
             ]);
+
+            Alert::success('Berhasil!', 'Nasabah berhasil ditambahkan!')->autoclose(3000);
+            return redirect()->route('admin.nasabah.index');
+
+        } catch (\Exception $e) {
+            // Jika validasi lolos tapi DATABASE ERROR (misal NIK null, table error, dll):
+            dd($e->getMessage());
         }
-
-        // Redirect ke halaman cetak nota transaksi
-        return redirect()->route('petugas.transaksi.print', ['transaksi' => $transaksi->id])
-            ->with([
-                'success' => 'Transaksi berhasil disimpan',
-                'transaksi_id' => $transaksi->id,
-            ]);
-    }
-    public function print($id)
-    {
-        $transaksi = Transaksi::with(['nasabah', 'petugas', 'detailTransaksi.sampah'])->findOrFail($id);
-
-        $total_transaksi = $transaksi->detailTransaksi->sum(function ($detail) {
-            return $detail->berat_kg * $detail->harga_per_kg;
-        });
-
-        $data = [
-            'tanggal_transaksi' => \Carbon\Carbon::parse($transaksi->tanggal_transaksi)->format('Y-m-d'),
-            'nasabah' => $transaksi->nasabah,
-            'petugas' => $transaksi->petugas,
-            'details' => $transaksi->detailTransaksi,
-            'total_transaksi' => $total_transaksi
-        ];
-
-        return view('pages.petugas.transaksi.print', $data);
     }
 
     public function show($id)

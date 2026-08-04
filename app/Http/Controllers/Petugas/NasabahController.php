@@ -48,122 +48,36 @@ class NasabahController extends Controller
      */
     public function store(Request $request)
     {
+        // 1. Validasi hanya field yang benar-benar dikirim dari form
         $request->validate([
-            'no_registrasi' => 'required|unique:nasabah,no_registrasi',
-            'nama_lengkap' => 'required|string|max:255',
+            'no_registrasi'  => 'required|string|unique:nasabah,no_registrasi',
+            'nama_lengkap'   => 'required|string|max:255',
             'alamat_lengkap' => 'required|string',
-            'no_hp' => 'required|string|max:15',
-            'nik' => 'required|digits:16|unique:nasabah,nik',
-            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-            'tempat_lahir' => 'required|string|max:100',
-            'tanggal_lahir' => 'required|date',
-            'email' => 'required|email', // Mengizinkan email yang sama
-            'username' => 'required|string|unique:nasabah,username|max:255',
-            'password' => 'required|string|min:8',
+            'username'       => 'nullable|string|max:255|unique:nasabah,username',
+            'password'       => 'nullable|string|min:8',
         ]);
 
-        $nasabah = Nasabah::create([
-            'nama_lengkap' => $request->nama_lengkap,
-            'no_registrasi' => $request->no_registrasi,
+        // 2. Susun data. Field opsional akan bernilai null secara otomatis
+        $data = [
+            'no_registrasi'  => $request->no_registrasi,
+            'nama_lengkap'   => $request->nama_lengkap,
             'alamat_lengkap' => $request->alamat_lengkap,
-            'no_hp' => $request->no_hp,
-            'nik' => $request->nik,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'tempat_lahir' => $request->tempat_lahir,
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'email' => $request->email, // Email tidak perlu unik
-            'username' => $request->username,
-            'status' => $request->status ?? 'aktif',
-            'password' => Hash::make($request->password),
-        ]);
+            'status'         => 'aktif',
+        ];
 
+        // 3. Simpan data Nasabah
+        $nasabah = Nasabah::create($data);
+
+        // 4. Inisialisasi Saldo Awal
         Saldo::create([
             'nasabah_id' => $nasabah->id,
-            'saldo' => 0
+            'saldo'      => 0
         ]);
 
         Alert::success('Berhasil!', 'Nasabah berhasil ditambahkan!')->autoclose(3000);
-        return redirect()->route('petugas.nasabah.index');
-    }
 
-
-
-    /**
-     * Display the specified resource.
-     */
-    public function show($id)
-    {
-        // Ambil data nasabah
-        $nasabah = Nasabah::findOrFail($id);
-
-        // Ambil riwayat setoran (transaksi)
-        $riwayatSetoran = Transaksi::with(['detailTransaksi.sampah'])
-            ->where('nasabah_id', $id)
-            ->orderBy('tanggal_transaksi', 'desc')
-            ->get();
-
-        // Ambil riwayat penarikan saldo
-        $riwayatPenarikan = PencairanSaldo::with('metodePencairan')
-            ->where('nasabah_id', $id)
-            ->orderBy('tanggal_pengajuan', 'desc')
-            ->get();
-
-        return view('pages.petugas.nasabah.show', compact('nasabah', 'riwayatSetoran', 'riwayatPenarikan'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        $nasabah = Nasabah::findOrFail($id);
-
-        return view('pages.petugas.nasabah.edit', compact('nasabah'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
-    {
-        $nasabah = Nasabah::findOrFail($id);
-
-        $request->validate([
-            'no_registrasi' => 'required|unique:nasabah,no_registrasi,' . $nasabah->id,
-            'nama_lengkap' => 'required|string|max:255',
-            'alamat_lengkap' => 'required|string',
-            'no_hp' => 'required|string|max:15',
-            'nik' => 'required|digits:16|unique:nasabah,nik,' . $nasabah->id,
-            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-            'tempat_lahir' => 'required|string|max:100',
-            'tanggal_lahir' => 'required|date',
-            'email' => 'required|email',
-            'username' => 'required|string|unique:nasabah,username,' . $nasabah->id . '|max:255',
-            'password' => 'nullable|string|min:8',
-            'status' => 'required|in:aktif,tidak_aktif',
-        ]);
-
-        $nasabah->update([
-            'no_registrasi' => $request->no_registrasi,
-            'nama_lengkap' => $request->nama_lengkap,
-            'alamat_lengkap' => $request->alamat_lengkap,
-            'no_hp' => $request->no_hp,
-            'nik' => $request->nik,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'tempat_lahir' => $request->tempat_lahir,
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'email' => $request->email,
-            'username' => $request->username,
-            'status' => $request->status,
-        ]);
-
-        if ($request->filled('password')) {
-            $nasabah->password = Hash::make($request->password);
-            $nasabah->save();
-        }
-
-        Alert::success('Berhasil!', 'Nasabah berhasil diperbarui!')->autoclose(3000);
-        return redirect()->route('petugas.nasabah.index');
+        // Redirect disesuaikan dengan route admin
+        return redirect()->route('admin.nasabah.index');
     }
 
 

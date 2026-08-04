@@ -134,7 +134,7 @@
                     </li>
 
                     <!-- Pengaturan -->
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a data-bs-toggle="collapse" href="#pengaturan" class="collapsed" aria-expanded="false">
                             <i class="fas fa-cogs"></i>
                             <p>Pengaturan</p>
@@ -159,15 +159,15 @@
                                 </li>
                             </ul>
                         </div>
-                    </li>
+                    </li> --}}
 
                     <!-- Feedback -->
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a href="{{ route('admin.feedback.index') }}">
                             <i class="fas fa-comments"></i>
                             <p>Feedback</p>
                         </a>
-                    </li>
+                    </li> --}}
                 @endif
                 @if (auth()->user()->role == 'petugas')
                     <!-- Dashboard -->

@@ -11,7 +11,7 @@
         <div>
             <h3 class="fw-bold mb-3">Manajem Aplikasi</h3>
             <h6 class="op-7 mb-2">
-                Di sini, Anda dapat mengelola versi aplikasi Android untuk bank sampah.
+                Di sini, Anda dapat menambah pengelola bank sampah.
             </h6>
         </div>
         <div class="ms-md-auto py-2 py-md-0">
@@ -30,11 +30,11 @@
                         <table class="table table-hover table-bordered table-head-bg-primary">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th>No</th>
                                     <th>Nama</th>
-                                    <th>Email</th>
+                                    {{-- <th>Email</th> --}}
                                     <th>Username</th>
-                                    <th>Role</th>
+                                    {{-- <th>Role</th> --}}
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -43,9 +43,9 @@
                                     <tr>
                                         <td>{{ $petugas->firstItem() + $index }}</td>
                                         <td>{{ $pet->nama }}</td>
-                                        <td>{{ $pet->email }}</td>
+                                        {{-- <td>{{ $pet->email }}</td> --}}
                                         <td>{{ $pet->username }}</td>
-                                        <td>{{ ucfirst($pet->role) }}</td>
+                                        {{-- <td>{{ ucfirst($pet->role) }}</td> --}}
                                         <td>
                                             <form onsubmit="return confirm('Apakah Anda yakin?');"
                                                 action="{{ route('admin.petugas.destroy', $pet->id) }}" method="POST">

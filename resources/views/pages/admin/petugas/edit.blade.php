@@ -30,24 +30,24 @@
                             <input type="text" name="nama" class="form-control"
                                 value="{{ old('nama', $petugas->nama) }}" required>
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label>Email</label>
                             <input type="email" name="email" class="form-control"
                                 value="{{ old('email', $petugas->email) }}" required>
-                        </div>
+                        </div> --}}
                         <div class="form-group">
                             <label>Username</label>
                             <input type="text" name="username" class="form-control"
                                 value="{{ old('username', $petugas->username) }}" required>
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label>Role</label>
                             <select name="role" class="form-control" required>
                                 <option value="petugas" {{ $petugas->role == 'petugas' ? 'selected' : '' }}>Petugas
                                 </option>
                                 <option value="admin" {{ $petugas->role == 'admin' ? 'selected' : '' }}>Admin</option>
                             </select>
-                        </div>
+                        </div> --}}
                         <div class="form-group">
                             <label>Password (Kosongkan jika tidak ingin mengubah)</label>
                             <input type="password" name="password" class="form-control">
