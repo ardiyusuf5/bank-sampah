@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
         $this->call(NasabahSeeder::class);
         $this->call(PengepulSeeder::class);
         $this->call(FeedbackSeeder::class);
+        $this->call(SampahSeeder::class);
+
         // \App\Models\User::factory(10)->create();
 
         // \App\Models\User::factory()->create([
