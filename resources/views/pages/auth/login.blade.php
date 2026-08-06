@@ -4,7 +4,7 @@
 
 @push('style')
     <!-- CSS Libraries -->
-    <link rel="stylesheet" href="{{ asset('asset/library/bootstrap-social/bootstrap-social.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('asset/library/bootstrap-social/bootstrap-social.css') }}"> --}}
 @endpush
 
 @section('main')
@@ -13,34 +13,43 @@
             <h3 class="text-center">Sistem Informasi Manajemen Bank Sampah Desa Pulosari Karawang</h3>
             <div class="login-form">
                 <div class="form-sub">
+                    {{-- @if ($errors->any())
+                        <div class="alert alert-danger mb-3">
+                            @foreach ($errors->all() as $error)
+                                <div>{{ $error }}</div>
+                            @endforeach
+                        </div>
+                    @endif --}}
                     <form method="POST" action="{{ route('login.post') }}" class="needs-validation" novalidate="">
                         @csrf
                         <div class="form-floating form-floating-custom mb-3">
-                            <input id="username" type="username" class="form-control" name="username" tabindex="1"
-                                required autofocus>
+                            <input id="username" type="text"
+                                class="form-control @error('username') is-invalid @enderror" name="username" tabindex="1"
+                                value="{{ old('username') }}" required autofocus>
                             <label for="username">Username</label>
-                        </div>
-                        <div class="invalid-feedback">
-                            Silakan isi alamat email Anda
+                            @error('username')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-floating form-floating-custom mb-3">
-                            <input id="password" type="password" class="form-control" name="password" tabindex="2"
+                            <input id="password" type="password"
+                                class="form-control @error('password') is-invalid @enderror" name="password" tabindex="2"
                                 required>
                             <label for="password">Password</label>
                             <div class="show-password">
                                 <i class="icon-eye"></i>
                             </div>
+                            @error('password')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <div class="invalid-feedback">
-                            Mohon isi kata sandi Anda
+                        <div class="form-action mb-3">
+                            <button type="submit" class="btn btn-primary w-100">Masuk</button>
                         </div>
-                </div>
-                <div class="form-action mb-3">
-                    <button type="submit" class="btn btn-primary w-100">Masuk</button>
+                    </form>
                 </div>
             </div>
         </div>
-        </form>
     </div>
 @endsection
 

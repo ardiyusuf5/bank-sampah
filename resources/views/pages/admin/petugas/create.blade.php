@@ -21,6 +21,15 @@
                 <div class="card-header">
                     <h4>Informasi Petugas</h4>
                 </div>
+                {{-- @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif --}}
                 <div class="card-body">
                     <form action="{{ route('admin.petugas.store') }}" method="POST">
                         @csrf
@@ -28,10 +37,10 @@
                             <label>Nama</label>
                             <input type="text" name="nama" class="form-control" required>
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label>Email</label>
                             <input type="email" name="email" class="form-control" required>
-                        </div>
+                        </div> --}}
                         <div class="form-group">
                             <label>Username</label>
                             <input type="text" name="username" class="form-control" required>
@@ -40,13 +49,13 @@
                             <label>Password</label>
                             <input type="password" name="password" class="form-control" required>
                         </div>
-                        <div class="form-group">
-                            <label>Role</label>
-                            <select name="role" class="form-control" required>
-                                <option value="petugas">Petugas</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                        </div>
+                        {{-- <div class="form-group">
+                                    <label>Role</label>
+                                    <select name="role" class="form-control" required>
+                                        <option value="petugas">Petugas</option>
+                                        <option value="admin">Admin</option>
+                                    </select>
+                                </div> --}}
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Simpan</button>
                             <a href="{{ route('admin.petugas.index') }}" class="btn btn-secondary">Batal</a>

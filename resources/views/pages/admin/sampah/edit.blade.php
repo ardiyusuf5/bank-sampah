@@ -34,7 +34,7 @@
                         <div class="form-group">
                             <label>Harga per Kg</label>
                             <input type="number" step="0.01" class="form-control" name="harga_per_kg"
-                                value="{{ $sampah->harga_per_kg }}" required>
+                                value="{{ $sampah->harga_per_kg + 0 }}" required>
                         </div>
                         {{-- <div class="form-group">
                             <label>Gambar</label>

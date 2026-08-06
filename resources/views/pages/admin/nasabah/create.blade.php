@@ -55,9 +55,18 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="alamat_lengkap">Alamat Lengkap</label>
-                            <textarea class="form-control @error('alamat_lengkap') is-invalid @enderror" data-height="150" name="alamat_lengkap"
-                                required>{{ old('alamat_lengkap') }}</textarea>
+                            <label for="alamat_lengkap">Alamat (RT)</label>
+                            <select name="alamat_lengkap" id="alamat_lengkap"
+                                class="form-control @error('alamat_lengkap') is-invalid @enderror" required>
+                                <option value="" disabled selected>-- Pilih RT --</option>
+                                @for ($i = 1; $i <= 9; $i++)
+                                    @php $rtValue = 'RT ' . str_pad($i, 2, '0', STR_PAD_LEFT); @endphp
+                                    <option value="{{ $rtValue }}"
+                                        {{ old('alamat_lengkap') == $rtValue ? 'selected' : '' }}>
+                                        {{ $rtValue }}
+                                    </option>
+                                @endfor
+                            </select>
                             @error('alamat_lengkap')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

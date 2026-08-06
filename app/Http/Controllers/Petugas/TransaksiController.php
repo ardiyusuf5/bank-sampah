@@ -3,20 +3,15 @@
 namespace App\Http\Controllers\Petugas;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
-use App\Models\Transaksi;
 use App\Models\Nasabah;
-use App\Models\Sampah;
 use App\Models\Saldo;
-use App\Models\DetailTransaksi;
-use App\Models\TokenWhatsApp;
-use Barryvdh\DomPDF\Facade as PDF;
+use App\Models\Sampah;
+use App\Models\Transaksi;
+use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class TransaksiController extends Controller
 {
-
     public function index()
     {
         $transaksis = Transaksi::with(['nasabah', 'detailTransaksi.sampah'])->paginate(10);
@@ -36,28 +31,28 @@ class TransaksiController extends Controller
         $prefix = "BSR-{$today}-SET-";
 
         // Cari kode transaksi terakhir hari ini
-        $lastTransaction = Transaksi::where('kode_transaksi', 'like', $prefix . '%')
+        $lastTransaction = Transaksi::where('kode_transaksi', 'like', $prefix.'%')
             ->orderBy('kode_transaksi', 'desc')
             ->first();
 
-        if (!$lastTransaction) {
+        if (! $lastTransaction) {
             // Jika belum ada transaksi hari ini, mulai dari 001
-            return $prefix . '001';
+            return $prefix.'001';
         }
 
         // Ekstrak nomor urut terakhir
         $lastNumber = substr($lastTransaction->kode_transaksi, -3);
-        $newNumber = str_pad((int)$lastNumber + 1, 3, '0', STR_PAD_LEFT);
+        $newNumber = str_pad((int) $lastNumber + 1, 3, '0', STR_PAD_LEFT);
 
-        return $prefix . $newNumber;
+        return $prefix.$newNumber;
     }
-
 
     public function create()
     {
         $kodeTransaksi = $this->generateUniqueTransactionCode();
         $nasabahList = Nasabah::all();
         $stokSampah = Sampah::all();
+
         return view('pages.petugas.transaksi.create', compact('nasabahList', 'stokSampah', 'kodeTransaksi'));
     }
 
@@ -69,8 +64,8 @@ class TransaksiController extends Controller
 
         try {
             $request->validate([
-                'no_registrasi'  => 'required|string|unique:nasabah,no_registrasi',
-                'nama_lengkap'   => 'required|string|max:255',
+                'no_registrasi' => 'required|string|unique:nasabah,no_registrasi',
+                'nama_lengkap' => 'required|string|max:255',
                 'alamat_lengkap' => 'required|string',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -80,20 +75,21 @@ class TransaksiController extends Controller
 
         try {
             $data = [
-                'no_registrasi'  => $request->no_registrasi,
-                'nama_lengkap'   => $request->nama_lengkap,
+                'no_registrasi' => $request->no_registrasi,
+                'nama_lengkap' => $request->nama_lengkap,
                 'alamat_lengkap' => $request->alamat_lengkap,
-                'status'         => 'aktif',
+                'status' => 'aktif',
             ];
 
             $nasabah = Nasabah::create($data);
 
             Saldo::create([
                 'nasabah_id' => $nasabah->id,
-                'saldo'      => 0
+                'saldo' => 0,
             ]);
 
             Alert::success('Berhasil!', 'Nasabah berhasil ditambahkan!')->autoclose(3000);
+
             return redirect()->route('admin.nasabah.index');
 
         } catch (\Exception $e) {

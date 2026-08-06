@@ -19,15 +19,15 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+                {{-- @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif --}}
                 <form action="{{ route('admin.nasabah.update', $nasabah->id) }}" method="POST">
                     @csrf
                     @method('PUT')
@@ -55,16 +55,16 @@
                                 </div>
                             </div>
                         </div> --}}
-                        <div class="form-group">
-                            <label for="nama_lengkap">Nama Lengkap</label>
-                            <input type="text" id="nama_lengkap"
-                                class="form-control @error('nama_lengkap') is-invalid @enderror" name="nama_lengkap"
-                                value="{{ old('nama_lengkap', $nasabah->nama_lengkap) }}" required>
-                            @error('nama_lengkap')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        {{-- <div class="row">
+                            <div class="form-group">
+                                <label for="nama_lengkap">Nama Lengkap</label>
+                                <input type="text" id="nama_lengkap"
+                                    class="form-control @error('nama_lengkap') is-invalid @enderror" name="nama_lengkap"
+                                    value="{{ old('nama_lengkap', $nasabah->nama_lengkap) }}" required>
+                                @error('nama_lengkap')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            {{-- <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
                                     <label for="jenis_kelamin">Jenis Kelamin</label>
@@ -156,37 +156,46 @@
                                 </div>
                             </div>
                         </div> --}}
-                        <div class="form-group">
-                            <label for="alamat_lengkap">Alamat Lengkap</label>
-                            <textarea class="form-control @error('alamat_lengkap') is-invalid @enderror" data-height="150" name="alamat_lengkap"
-                                required>{{ old('alamat_lengkap', $nasabah->alamat_lengkap) }}</textarea>
-                            @error('alamat_lengkap')
-                                <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
-                            @enderror
-                        {{-- </div>
-                        <div class="form-group">
-                            <label for="status">Status</label>
-                            <select id="status" class="form-control" name="status" required>
-                                <option value="aktif" {{ $nasabah->status == 'aktif' ? 'selected' : '' }}>Aktif
-                                </option>
-                                <option value="tidak_aktif" {{ $nasabah->status == 'tidak_aktif' ? 'selected' : '' }}>
-                                    Tidak Aktif</option>
-                            </select>
-                        </div> --}}
+                            <div class="form-group">
+                                <label for="alamat_lengkap">Alamat (RT)</label>
+                                <select name="alamat_lengkap" id="alamat_lengkap"
+                                    class="form-control @error('alamat_lengkap') is-invalid @enderror" required>
+                                    <option value="" disabled selected>-- Pilih RT --</option>
+                                    @for ($i = 1; $i <= 9; $i++)
+                                        @php $rtValue = 'RT ' . str_pad($i, 2, '0', STR_PAD_LEFT); @endphp
+                                        <option value="{{ $rtValue }}"
+                                            {{ old('alamat_lengkap') == $rtValue ? 'selected' : '' }}>
+                                            {{ $rtValue }}
+                                        </option>
+                                    @endfor
+                                </select>
+                                @error('alamat_lengkap')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            {{-- <div class="form-group">
+                                <label for="status">Status</label>
+                                <select id="status" class="form-control" name="status" required>
+                                    <option value="aktif" {{ $nasabah->status == 'aktif' ? 'selected' : '' }}>Aktif
+                                    </option>
+                                    <option value="tidak_aktif" {{ $nasabah->status == 'tidak_aktif' ? 'selected' : '' }}>
+                                        Tidak Aktif</option>
+                                </select>
+                            </div> --}}
+                        </div>
+                        <div class="card-footer text-right">
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                            <a href="{{ route('admin.nasabah.index') }}" class="btn btn-secondary">Batal</a>
+                        </div>
                     </div>
-                    <div class="card-footer text-right">
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                        <a href="{{ route('admin.nasabah.index') }}" class="btn btn-secondary">Batal</a>
-                    </div>
+                </form>
             </div>
-            </form>
         </div>
-    </div>
 
-@endsection
+    @endsection
 
-@push('scripts')
-    <!-- JS Libraies -->
+    @push('scripts')
+        <!-- JS Libraies -->
 
-    <!-- Page Specific JS File -->
-@endpush
+        <!-- Page Specific JS File -->
+    @endpush

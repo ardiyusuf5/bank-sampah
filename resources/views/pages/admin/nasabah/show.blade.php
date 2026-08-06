@@ -13,7 +13,7 @@
             <h6 class="op-7 mb-2">Di halaman ini Anda dapat melihat detail nasabah.</h6>
         </div>
         <div class="ms-md-auto mt-3 mt-md-0">
-            <a href="{{ route('admin.pengepul.index') }}" class="btn btn-secondary">
+            <a href="{{ route('admin.nasabah.index') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left me-1"></i> Kembali
             </a>
         </div>
@@ -33,7 +33,7 @@
                             <td>:</td>
                             <td>{{ $nasabah->nama_lengkap }}</td>
                         </tr>
-                        <tr>
+                        {{-- <tr>
                             <td><strong>NIK</strong></td>
                             <td>:</td>
                             <td>{{ $nasabah->nik }}</td>
@@ -47,7 +47,7 @@
                             <td><strong>Email</strong></td>
                             <td>:</td>
                             <td>{{ $nasabah->email }}</td>
-                        </tr>
+                        </tr> --}}
                         <tr>
                             <td><strong>Alamat</strong></td>
                             <td>:</td>

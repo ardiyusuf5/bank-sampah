@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Petugas;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class PetugasController extends Controller
 {
@@ -23,10 +24,10 @@ class PetugasController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'email' => 'required|email|unique:petugas',
+            'email' => 'nullable|email|unique:petugas',
             'username' => 'required|string|unique:petugas',
             'password' => 'required|string|min:6',
-            'role' => 'required|in:admin,petugas'
+            'role' => 'nullable|in:admin,petugas' // nullable agar form boleh kosong
         ]);
 
         Petugas::create([
@@ -34,21 +35,15 @@ class PetugasController extends Controller
             'email' => $request->email,
             'username' => $request->username,
             'password' => Hash::make($request->password),
-            'role' => $request->role,
+            'role' => $request->role ?? 'admin', // Default ke admin jika kosong
         ]);
 
         return redirect()->route('admin.petugas.index')->with('success', 'Petugas berhasil ditambahkan.');
     }
 
-    // public function show(Petugas $petugas)
-    // {
-    //     return view('admin.petugas.show', compact('petugas'));
-    // }
-
     public function edit(string $id)
     {
         $petugas = Petugas::findOrFail($id);
-
         return view('pages.admin.petugas.edit', compact('petugas'));
     }
 
@@ -58,19 +53,40 @@ class PetugasController extends Controller
 
         $request->validate([
             'nama' => 'required|string|max:255',
-            'email' => 'required|email|unique:petugas,email,' . $petugas->id,
+            'email' => 'nullable|email|unique:petugas,email,' . $petugas->id,
             'username' => 'required|string|unique:petugas,username,' . $petugas->id,
-            'role' => 'required|in:admin,petugas'
+            'password' => 'nullable|string|min:6', // nullable artinya boleh dikosongkan saat edit
+            'role' => 'nullable|in:admin,petugas'
         ]);
 
-        $petugas->update($request->only(['nama', 'email', 'username', 'role']));
+        // 1. Ambil data teks biasa dulu
+        $data = [
+            'nama' => $request->nama,
+            'email' => $request->email,
+            'username' => $request->username,
+            'role' => $request->role ?? 'admin', // Tetap beri default admin jika kosong
+        ];
+
+        // 2. Cek apakah user mengisi password baru
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        // 3. Eksekusi update data
+        $petugas->update($data);
 
         return redirect()->route('admin.petugas.index')->with('success', 'Petugas berhasil diperbarui.');
     }
 
-    public function destroy(Petugas $petugas)
+    public function destroy($id)
     {
+        // 1. Cari data petugas berdasarkan ID yang dikirim dari form blade
+        $petugas = Petugas::findOrFail($id);
+
+        // 2. Eksekusi perintah hapus
         $petugas->delete();
+
+        // 3. Redirect kembali dengan pesan sukses
         return redirect()->route('admin.petugas.index')->with('success', 'Petugas berhasil dihapus.');
     }
 }

@@ -41,7 +41,7 @@ class PencairanSaldoController extends Controller
     {
         $request->validate([
             'nasabah_id' => 'required|exists:nasabah,id',
-            'metode_id' => 'required|exists:metode_pencairan,id',
+            'metode_id' => 'nullable|exists:metode_pencairan,id',
             'jumlah_pencairan' => 'required|numeric|min:1',
         ]);
 
@@ -88,7 +88,7 @@ class PencairanSaldoController extends Controller
     {
         $request->validate([
             'nasabah_id' => 'required|exists:nasabah,id',
-            'nama_metode_pencairan' => 'required|string|max:255',
+            'nama_metode_pencairan' => 'nullable|string|max:255',
             'no_rek' => 'required|string|max:255',
         ]);
 

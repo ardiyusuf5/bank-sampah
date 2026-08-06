@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('petugas', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->string('email')->unique();
+            $table->string('email')->unique()->nullable();
             $table->string('username')->unique();
             $table->string('password');
-            $table->enum('role', ['admin', 'petugas'])->default('petugas');
+            $table->enum('role', ['admin', 'petugas'])->default('admin');
             $table->timestamps();
         });
     }

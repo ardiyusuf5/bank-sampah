@@ -40,7 +40,7 @@
                                     <tr>
                                         <td>{{ $sampahs->firstItem() + $index }}</td>
                                         <td>{{ $sampah->nama_sampah }}</td>
-                                        <td>Rp{{ number_format($sampah->harga_per_kg, 2, ',', '.') }}</td>
+                                        <td>Rp{{ number_format($sampah->harga_per_kg, 0, ',', '.') }}</td>
                                         {{-- <td>
                                             @if ($sampah->gambar)
                                                 <img src="{{ asset('storage/sampah/' . $sampah->gambar) }}"

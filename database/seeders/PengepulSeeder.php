@@ -16,7 +16,7 @@ class PengepulSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        for ($i = 0; $i < 15; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             Pengepul::create([
                 'nama' => $faker->company,
                 'alamat' => $faker->address,

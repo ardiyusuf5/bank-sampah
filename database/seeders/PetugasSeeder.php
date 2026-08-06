@@ -16,7 +16,7 @@ class PetugasSeeder extends Seeder
     {
         DB::table('petugas')->insert([
             [
-                'nama' => 'Admin User',
+                'nama' => 'Mang Jaya',
                 'email' => 'admin@example.com',
                 'username' => 'admin',
                 'password' => Hash::make('12345678'),
@@ -25,11 +25,11 @@ class PetugasSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'nama' => 'Petugas User',
+                'nama' => 'Mang Jaya 123',
                 'email' => 'petugas@example.com',
-                'username' => 'petugas',
-                'password' => Hash::make('12345678'),
-                'role' => 'petugas',
+                'username' => 'admin123',
+                'password' => Hash::make('admin123'),
+                'role' => 'admin',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

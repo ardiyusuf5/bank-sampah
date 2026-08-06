@@ -85,12 +85,15 @@ class SampahController extends Controller
 
 
 
-    public function destroy(Sampah $sampah)
+    public function destroy($id)
     {
-        if ($sampah->gambar) {
-            Storage::delete($sampah->gambar);
-        }
+        // 1. Cari data sampah berdasarkan ID yang dikirim dari form blade
+        $sampah = Sampah::findOrFail($id);
+
+        // 2. Eksekusi perintah hapus
         $sampah->delete();
-        return redirect()->route('pages.admin.sampah.index')->with('success', 'Sampah berhasil dihapus.');
+
+        // 3. Redirect kembali dengan pesan sukses
+        return redirect()->route('admin.sampah.index')->with('success', 'Sampah berhasil dihapus.');
     }
 }

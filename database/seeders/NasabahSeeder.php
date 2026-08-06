@@ -17,7 +17,7 @@ class NasabahSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $nasabah = Nasabah::create([
                 'no_registrasi' => 'REG' . $faker->unique()->numberBetween(100, 999),
                 'nik' => $faker->numerify('################'),

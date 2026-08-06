@@ -9,7 +9,7 @@
 @section('main')
     <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
         <div>
-            <h3 class="fw-bold mb-3">Form Tambah Pengepul</h3>
+            <h3 class="fw-bold mb-3">Form Edit Pengepul</h3>
             <h6 class="op-7 mb-2">
                 Di halaman ini Anda dapat menambah mengedit pengepul.
             </h6>
@@ -22,6 +22,13 @@
                     <h4>Informasi Pengepul</h4>
                 </div>
                 <div class="card-body">
+                    {{-- @if ($errors->any())
+                        <div class="alert alert-danger mb-3">
+                            @foreach ($errors->all() as $error)
+                                <div>{{ $error }}</div>
+                            @endforeach
+                        </div>
+                    @endif --}}
                     <form method="POST" action="{{ route('admin.pengepul.update', $pengepul->id) }}">
                         @csrf
                         @method('PUT')
@@ -37,7 +44,7 @@
                         <div class="form-group">
                             <label>Kontak</label>
                             <input type="text" class="form-control" name="kontak" value="{{ $pengepul->kontak }}"
-                                required>
+                                required maxlength="15">
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Update</button>

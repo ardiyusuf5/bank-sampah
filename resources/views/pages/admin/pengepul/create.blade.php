@@ -18,6 +18,13 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
+                {{-- @if ($errors->any())
+                    <div class="alert alert-danger mb-3">
+                        @foreach ($errors->all() as $error)
+                            <div>{{ $error }}</div>
+                        @endforeach
+                    </div>
+                @endif --}}
                 <form method="POST" action="{{ route('admin.pengepul.store') }}">
                     @csrf
                     <div class="card-header">
@@ -37,7 +44,7 @@
                         </div>
                         <div class="form-group">
                             <label>Kontak</label>
-                            <input autocomplete="off" type="text" class="form-control" name="kontak" required>
+                            <input autocomplete="off" type="text" class="form-control" name="kontak" maxlength="15" required>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Simpan</button>
