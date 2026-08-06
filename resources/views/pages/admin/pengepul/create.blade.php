@@ -44,7 +44,7 @@
                         </div>
                         <div class="form-group">
                             <label>Kontak</label>
-                            <input autocomplete="off" type="text" class="form-control" name="kontak" maxlength="15" required>
+                            <input type="tel" autocomplete="off" class="form-control" name="kontak" maxlength="15" required>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Simpan</button>

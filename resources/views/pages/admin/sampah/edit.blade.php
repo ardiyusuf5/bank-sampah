@@ -33,8 +33,9 @@
                         </div>
                         <div class="form-group">
                             <label>Harga per Kg</label>
-                            <input type="number" step="0.01" class="form-control" name="harga_per_kg"
+                            <input type="text" inputmode="numeric" step="0.01" class="form-control" id="harga_display"
                                 value="{{ $sampah->harga_per_kg + 0 }}" required>
+                            <input type="hidden" name="harga_per_kg" id="harga_real">
                         </div>
                         {{-- <div class="form-group">
                             <label>Gambar</label>

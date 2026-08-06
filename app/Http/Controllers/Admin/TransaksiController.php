@@ -10,7 +10,6 @@ use App\Models\Nasabah;
 use App\Models\Sampah;
 use App\Models\Saldo;
 use App\Models\DetailTransaksi;
-use App\Models\TokenWhatsApp;
 use Barryvdh\DomPDF\Facade as PDF;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -79,7 +78,7 @@ class TransaksiController extends Controller
         $request->validate([
             'kode_transaksi'                  => 'required|string|unique:transaksi,kode_transaksi',
             'nasabah_id'                      => 'required|exists:nasabah,id',
-            'tanggal_transaksi'               => 'required|date',
+            'tanggal_transaksi'               => 'nullable|date',
             'detail_transaksi'                => 'required|array|min:1',
             'detail_transaksi.*.sampah_id'    => 'required|exists:sampah,id',
             'detail_transaksi.*.berat_kg'     => 'required|numeric|min:0',

@@ -3,18 +3,9 @@
     <div class="sidebar-logo">
         <!-- Logo Header -->
         <div class="logo-header">
-            @if (auth()->user()->role == 'admin')
-                <a href="{{ route('admin.dashboard') }}" class="logo">
-                    <img src="{{ asset('assets/img/kaiadmin/logo_dark.svg') }}" alt="navbar brand" class="navbar-brand"
-                        height="25">
-                </a>
-            @endif
-            @if (auth()->user()->role == 'petugas')
-                <a href="{{ route('petugas.dashboard') }}" class="logo">
-                    <img src="{{ asset('assets/img/kaiadmin/logo_dark.svg') }}" alt="navbar brand" class="navbar-brand"
-                        height="25">
-                </a>
-            @endif
+            <a href="{{ auth()->user()->role == 'admin' ? route('admin.dashboard') : route('petugas.dashboard') }}" class="logo">
+                <img src="{{ asset('assets/img/kaiadmin/logo_dark.svg') }}" alt="navbar brand" class="navbar-brand" height="25">
+            </a>
             <div class="nav-toggle">
                 <button class="btn btn-toggle toggle-sidebar">
                     <i class="gg-menu-right"></i>
@@ -29,12 +20,15 @@
         </div>
         <!-- End Logo Header -->
     </div>
+
     <div class="sidebar-wrapper scrollbar scrollbar-inner">
         <div class="sidebar-content">
             <ul class="nav nav-primary">
+
+                {{-- MENU ADMIN --}}
                 @if (auth()->user()->role == 'admin')
                     <!-- Dashboard -->
-                    <li class="nav-item">
+                    <li class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                         <a href="{{ route('admin.dashboard') }}">
                             <i class="fas fa-home"></i>
                             <p>Dashboard</p>
@@ -42,30 +36,31 @@
                     </li>
 
                     <!-- Data Master -->
-                    <li class="nav-item">
-                        <a data-bs-toggle="collapse" href="#data-master" class="collapsed" aria-expanded="false">
+                    @php $isDataMasterActive = request()->routeIs('admin.nasabah.*', 'admin.petugas.*', 'admin.sampah.*', 'admin.pengepul.*'); @endphp
+                    <li class="nav-item {{ $isDataMasterActive ? 'active' : '' }}">
+                        <a data-bs-toggle="collapse" href="#data-master-admin" class="{{ $isDataMasterActive ? '' : 'collapsed' }}" aria-expanded="{{ $isDataMasterActive ? 'true' : 'false' }}">
                             <i class="fas fa-database"></i>
                             <p>Data Master</p>
                             <span class="caret"></span>
                         </a>
-                        <div class="collapse" id="data-master">
+                        <div class="collapse {{ $isDataMasterActive ? 'show' : '' }}" id="data-master-admin">
                             <ul class="nav nav-collapse">
-                                <li>
+                                <li class="{{ request()->routeIs('admin.nasabah.*') ? 'active' : '' }}">
                                     <a href="{{ route('admin.nasabah.index') }}">
                                         <span class="sub-item">Data Nasabah</span>
                                     </a>
                                 </li>
-                                <li>
+                                <li class="{{ request()->routeIs('admin.petugas.*') ? 'active' : '' }}">
                                     <a href="{{ route('admin.petugas.index') }}">
                                         <span class="sub-item">Data Petugas</span>
                                     </a>
                                 </li>
-                                <li>
+                                <li class="{{ request()->routeIs('admin.sampah.*') ? 'active' : '' }}">
                                     <a href="{{ route('admin.sampah.index') }}">
                                         <span class="sub-item">Data Sampah</span>
                                     </a>
                                 </li>
-                                <li>
+                                <li class="{{ request()->routeIs('admin.pengepul.*') ? 'active' : '' }}">
                                     <a href="{{ route('admin.pengepul.index') }}">
                                         <span class="sub-item">Data Pengepul</span>
                                     </a>
@@ -75,20 +70,21 @@
                     </li>
 
                     <!-- Manajemen Konten -->
-                    <li class="nav-item">
-                        <a data-bs-toggle="collapse" href="#manajemen-konten" class="collapsed" aria-expanded="false">
+                    @php $isKontenActive = request()->routeIs('admin.artikel.*', 'admin.video.*'); @endphp
+                    <li class="nav-item {{ $isKontenActive ? 'active' : '' }}">
+                        <a data-bs-toggle="collapse" href="#manajemen-konten" class="{{ $isKontenActive ? '' : 'collapsed' }}" aria-expanded="{{ $isKontenActive ? 'true' : 'false' }}">
                             <i class="fas fa-file-alt"></i>
                             <p>Manajemen Konten</p>
                             <span class="caret"></span>
                         </a>
-                        <div class="collapse" id="manajemen-konten">
+                        <div class="collapse {{ $isKontenActive ? 'show' : '' }}" id="manajemen-konten">
                             <ul class="nav nav-collapse">
-                                <li>
+                                <li class="{{ request()->routeIs('admin.artikel.*') ? 'active' : '' }}">
                                     <a href="{{ route('admin.artikel.index') }}">
                                         <span class="sub-item">Data Artikel</span>
                                     </a>
                                 </li>
-                                <li>
+                                <li class="{{ request()->routeIs('admin.video.*') ? 'active' : '' }}">
                                     <a href="{{ route('admin.video.index') }}">
                                         <span class="sub-item">Data Video</span>
                                     </a>
@@ -98,25 +94,26 @@
                     </li>
 
                     <!-- Transaksi -->
-                    <li class="nav-item">
-                        <a data-bs-toggle="collapse" href="#transaksi" class="collapsed" aria-expanded="false">
+                    @php $isTransaksiAdminActive = request()->routeIs('admin.transaksi.*', 'admin.tarik-saldo.*', 'admin.pengiriman.*'); @endphp
+                    <li class="nav-item {{ $isTransaksiAdminActive ? 'active' : '' }}">
+                        <a data-bs-toggle="collapse" href="#transaksi-admin" class="{{ $isTransaksiAdminActive ? '' : 'collapsed' }}" aria-expanded="{{ $isTransaksiAdminActive ? 'true' : 'false' }}">
                             <i class="fas fa-money-bill-wave"></i>
                             <p>Transaksi</p>
                             <span class="caret"></span>
                         </a>
-                        <div class="collapse" id="transaksi">
+                        <div class="collapse {{ $isTransaksiAdminActive ? 'show' : '' }}" id="transaksi-admin">
                             <ul class="nav nav-collapse">
-                                <li>
+                                <li class="{{ request()->routeIs('admin.transaksi.*') ? 'active' : '' }}">
                                     <a href="{{ route('admin.transaksi.index') }}">
                                         <span class="sub-item">Transaksi Setoran</span>
                                     </a>
                                 </li>
-                                <li>
+                                <li class="{{ request()->routeIs('admin.tarik-saldo.*') ? 'active' : '' }}">
                                     <a href="{{ route('admin.tarik-saldo.index') }}">
                                         <span class="sub-item">Tarik Saldo</span>
                                     </a>
                                 </li>
-                                <li>
+                                <li class="{{ request()->routeIs('admin.pengiriman.*') ? 'active' : '' }}">
                                     <a href="{{ route('admin.pengiriman.index') }}">
                                         <span class="sub-item">Pengiriman Sampah</span>
                                     </a>
@@ -125,53 +122,19 @@
                         </div>
                     </li>
 
-                    <!-- Dashboard -->
-                    <li class="nav-item">
+                    <!-- Laporan -->
+                    <li class="nav-item {{ request()->routeIs('admin.laporan.*') ? 'active' : '' }}">
                         <a href="{{ route('admin.laporan.index') }}">
                             <i class="fas fa-print"></i>
                             <p>Cetak Laporan</p>
                         </a>
                     </li>
-
-                    <!-- Pengaturan -->
-                    {{-- <li class="nav-item">
-                        <a data-bs-toggle="collapse" href="#pengaturan" class="collapsed" aria-expanded="false">
-                            <i class="fas fa-cogs"></i>
-                            <p>Pengaturan</p>
-                            <span class="caret"></span>
-                        </a>
-                        <div class="collapse" id="pengaturan">
-                            <ul class="nav nav-collapse">
-                                <li>
-                                    <a href="{{ route('admin.token-whatsapp.index') }}">
-                                        <span class="sub-item">Token WhatsApp</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('admin.aplikasi.index') }}">
-                                        <span class="sub-item">Update APK</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('admin.tentang_kami.index') }}">
-                                        <span class="sub-item">Tentang Kami</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li> --}}
-
-                    <!-- Feedback -->
-                    {{-- <li class="nav-item">
-                        <a href="{{ route('admin.feedback.index') }}">
-                            <i class="fas fa-comments"></i>
-                            <p>Feedback</p>
-                        </a>
-                    </li> --}}
                 @endif
+
+                {{-- MENU PETUGAS --}}
                 @if (auth()->user()->role == 'petugas')
                     <!-- Dashboard -->
-                    <li class="nav-item">
+                    <li class="nav-item {{ request()->routeIs('petugas.dashboard') ? 'active' : '' }}">
                         <a href="{{ route('petugas.dashboard') }}">
                             <i class="fas fa-home"></i>
                             <p>Dashboard</p>
@@ -179,15 +142,16 @@
                     </li>
 
                     <!-- Data Master -->
-                    <li class="nav-item">
-                        <a data-bs-toggle="collapse" href="#data-master" class="collapsed" aria-expanded="false">
+                    @php $isDataMasterPetugas = request()->routeIs('petugas.nasabah.*'); @endphp
+                    <li class="nav-item {{ $isDataMasterPetugas ? 'active' : '' }}">
+                        <a data-bs-toggle="collapse" href="#data-master-petugas" class="{{ $isDataMasterPetugas ? '' : 'collapsed' }}" aria-expanded="{{ $isDataMasterPetugas ? 'true' : 'false' }}">
                             <i class="fas fa-database"></i>
                             <p>Data Master</p>
                             <span class="caret"></span>
                         </a>
-                        <div class="collapse" id="data-master">
+                        <div class="collapse {{ $isDataMasterPetugas ? 'show' : '' }}" id="data-master-petugas">
                             <ul class="nav nav-collapse">
-                                <li>
+                                <li class="{{ request()->routeIs('petugas.nasabah.*') ? 'active' : '' }}">
                                     <a href="{{ route('petugas.nasabah.index') }}">
                                         <span class="sub-item">Data Nasabah</span>
                                     </a>
@@ -197,15 +161,16 @@
                     </li>
 
                     <!-- Transaksi -->
-                    <li class="nav-item">
-                        <a data-bs-toggle="collapse" href="#transaksi" class="collapsed" aria-expanded="false">
+                    @php $isTransaksiPetugas = request()->routeIs('petugas.transaksi.*'); @endphp
+                    <li class="nav-item {{ $isTransaksiPetugas ? 'active' : '' }}">
+                        <a data-bs-toggle="collapse" href="#transaksi-petugas" class="{{ $isTransaksiPetugas ? '' : 'collapsed' }}" aria-expanded="{{ $isTransaksiPetugas ? 'true' : 'false' }}">
                             <i class="fas fa-money-bill-wave"></i>
                             <p>Transaksi</p>
                             <span class="caret"></span>
                         </a>
-                        <div class="collapse" id="transaksi">
+                        <div class="collapse {{ $isTransaksiPetugas ? 'show' : '' }}" id="transaksi-petugas">
                             <ul class="nav nav-collapse">
-                                <li>
+                                <li class="{{ request()->routeIs('petugas.transaksi.*') ? 'active' : '' }}">
                                     <a href="{{ route('petugas.transaksi.index') }}">
                                         <span class="sub-item">Transaksi Setoran</span>
                                     </a>
@@ -216,16 +181,12 @@
                 @endif
 
                 <!-- Logout -->
-                <li class="nav-item">
-                    <a href="#"
-                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <i class="fas fa-sign-out-alt"></i>
+                <li class="nav-item mt-3">
+                    <a href="#" class="text-danger" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <i class="fas fa-sign-out-alt text-danger"></i>
                         <p>Keluar</p>
                     </a>
                 </li>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                    @csrf
-                </form>
             </ul>
         </div>
     </div>

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('pencairan_saldo', function (Blueprint $table) {
             $table->id();
             $table->foreignId('nasabah_id')->constrained('nasabah')->onDelete('cascade');
-            $table->foreignId('metode_id')->constrained('metode_pencairan')->onDelete('cascade');
+            $table->foreignId('metode_id')->nullable()->constrained('metode_pencairan')->onDelete('cascade');
             $table->decimal('jumlah_pencairan', 15, 2);
             $table->timestamp('tanggal_pengajuan')->nullable();
             $table->timestamp('tanggal_proses')->nullable();

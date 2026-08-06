@@ -7,7 +7,7 @@
     <title>Slip Transaksi - Bank Sampah</title>
     <style>
         @page {
-            size: auto;
+            size: A4 portrait;
             margin: 0mm;
             /* Menghilangkan header & footer bawaan browser (URL, Tanggal, Halaman) */
         }

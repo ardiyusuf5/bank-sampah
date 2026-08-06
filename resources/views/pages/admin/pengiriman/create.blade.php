@@ -82,7 +82,7 @@
                                         </td>
                                         <td class="stok-tersedia"></td>
                                         <td>
-                                            <input type="number" name="harga_per_kg[]" class="form-control harga-input"
+                                            <input type="text" id="harga" inputmode="numeric" name="harga_per_kg[]" class="form-control harga-input"
                                                 placeholder="Harga per Kg" required>
                                         </td>
                                         <td class="harga-total">0</td>

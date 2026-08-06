@@ -40,10 +40,10 @@
                             </select>
                         </div>
 
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label>Tanggal Setoran</label>
                             <input type="date" name="tanggal_transaksi" value="{{ date('Y-m-d') }}" class="form-control" required>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
 
@@ -76,10 +76,9 @@
                                             </select>
                                         </td>
                                         <td>
-                                            <input type="number" step="any" name="detail_transaksi[0][berat_kg]" class="form-control berat-kg" placeholder="Berat (kg)" required>
+                                            <input type="number" step="any" name="detail_transaksi[0][berat_kg]" class="form-control berat-kg" placeholder="Berat (kg)" min="0" oninput="if(this.value < 0) this.value = 0;"  required>
                                         </td>
                                         <td>
-                                            {{-- Dikerjakan sebagai type="text" agar mendukung format ribuan titik (40.000) --}}
                                             <input type="text" name="detail_transaksi[0][harga_per_kg]" class="form-control harga-per-kg" placeholder="Harga per kg" required readonly>
                                         </td>
                                         <td class="total-harga fw-bold align-middle">0</td>

@@ -36,7 +36,7 @@
                         <tr>
                             <td><strong>Tanggal Transaksi</strong></td>
                             <td>:</td>
-                            <td>{{ \Carbon\Carbon::parse($transaksi->tanggal_transaksi)->format('d-m-Y H:i') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($transaksi->created_at)->format('d-m-Y H:i') }}</td>
                         </tr>
                         <tr>
                             <td><strong>Nama Nasabah</strong></td>

@@ -29,18 +29,24 @@
                             <input autocomplete="off" type="text" class="form-control" name="nama_sampah" required>
                         </div>
                         <div class="form-group">
-                            <label>Harga per Kg</label>
-                            <input autocomplete="off" type="number" step="0.01" class="form-control" name="harga_per_kg"
-                                required>
-                        </div>
-                        {{-- <div class="form-group">
+                            <div class="form-group">
+                                <label>Harga per Kg</label>
+
+                                {{-- Input Tampilan (Tanpa atribut name agar tidak dikirim ke backend) --}}
+                                <input autocomplete="off" type="text" inputmode="numeric" id="harga_display"
+                                    class="form-control" placeholder="Contoh: 2.000" required>
+
+                                {{-- Input Tersembunyi (Membawa name="harga_per_kg" & berisi angka murni untuk database) --}}
+                                <input type="hidden" name="harga_per_kg" id="harga_real">
+                            </div>
+                            {{-- <div class="form-group">
                             <label>Gambar</label>
                             <input type="file" class="form-control" name="gambar" accept="image/*">
                         </div> --}}
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary">Simpan</button>
-                            <a href="{{ route('admin.sampah.index') }}" class="btn btn-secondary">Batal</a>
-                        </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                <a href="{{ route('admin.sampah.index') }}" class="btn btn-secondary">Batal</a>
+                            </div>
                     </form>
                 </div>
             </div>

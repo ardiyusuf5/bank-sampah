@@ -4,7 +4,7 @@
 
 @push('style')
     <!-- CSS Libraries -->
-    <link rel="stylesheet" href="{{ asset('library/selectric/public/selectric.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('library/selectric/public/selectric.css') }}"> --}}
 @endpush
 
 @section('main')
@@ -52,11 +52,11 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Tanggal Pengajuan</th>
-                                    <th>Tanggal Proses</th>
+                                    {{-- <th>Tanggal Proses</th> --}}
                                     <th>Nama Nasabah</th>
                                     <th>Jumlah Tarik</th>
-                                    <th>Status</th>
-                                    <th>Keterangan</th>
+                                    {{-- <th>Status</th>
+                                    <th>Keterangan</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -64,17 +64,17 @@
                                     <tr>
                                         <td>{{ $pencairanSaldo->firstItem() + $index }}</td>
                                         <td>{{ $pencairan->tanggal_pengajuan->format('d-m-Y H:i') }}</td>
-                                        <td>{{ $pencairan->tanggal_proses ? $pencairan->tanggal_proses->format('d-m-Y H:i') : '-' }}
+                                        {{-- <td>{{ $pencairan->tanggal_proses ? $pencairan->tanggal_proses->format('d-m-Y H:i') : '-' }} --}}
                                         </td>
                                         <td>{{ $pencairan->nasabah->nama_lengkap }}</td>
-                                        <td>{{ number_format($pencairan->jumlah_pencairan, 0, ',', '.') }}</td>
-                                        <td>
+                                        <td>Rp{{ number_format($pencairan->jumlah_pencairan, 0, ',', '.') }}</td>
+                                        {{-- <td>
                                             <span
                                                 class="badge badge-{{ $pencairan->status === 'disetujui' ? 'success' : ($pencairan->status === 'ditolak' ? 'danger' : 'warning') }}">
                                                 {{ ucfirst($pencairan->status) }}
                                             </span>
                                         </td>
-                                        <td>{{ $pencairan->keterangan ?? '-' }}</td>
+                                        <td>{{ $pencairan->keterangan ?? '-' }}</td> --}}
                                     </tr>
                                 @empty
                                     <tr>

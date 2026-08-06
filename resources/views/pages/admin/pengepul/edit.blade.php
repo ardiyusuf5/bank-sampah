@@ -43,7 +43,7 @@
                         </div>
                         <div class="form-group">
                             <label>Kontak</label>
-                            <input type="text" class="form-control" name="kontak" value="{{ $pengepul->kontak }}"
+                            <input type="tel" class="form-control" name="kontak" value="{{ $pengepul->kontak }}"
                                 required maxlength="15">
                         </div>
                         <div class="form-group">

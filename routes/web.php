@@ -87,7 +87,7 @@ Route::middleware(['auth', 'checkRole:admin'])->prefix('admin')->group(function 
     Route::get('/tarik-saldo', [AdminTarikSaldoController::class, 'index'])->name('admin.tarik-saldo.index');
     Route::get('/tarik-saldo/create', [AdminTarikSaldoController::class, 'create'])->name('admin.tarik-saldo.create');
     Route::post('/tarik-saldo', [AdminTarikSaldoController::class, 'store'])->name('admin.tarik-saldo.store');
-    Route::get('/tarik-saldo/saldo/{nasabahId}', [AdminTarikSaldoController::class, 'getSaldoNasabah'])->name('admin.tarik-saldo.saldo');
+    Route::get('/tarik-saldo/saldo/{nasabahId}', [AdminTarikSaldoController::class, 'getMetodePencairan'])->name('admin.tarik-saldo.saldo');
     Route::resource('/pengiriman/sampah', AdminPengirimanPengepulController::class)->names('admin.pengiriman');
 
     // Pengaturan

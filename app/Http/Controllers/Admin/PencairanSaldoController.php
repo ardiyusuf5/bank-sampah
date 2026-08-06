@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\PencairanSaldo;
 use App\Models\Saldo;
 use App\Models\Nasabah;
-use App\Models\MetodePencairan;
+use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class PencairanSaldoController extends Controller
@@ -15,7 +15,6 @@ class PencairanSaldoController extends Controller
     public function index()
     {
         $pencairanSaldo = PencairanSaldo::with(['nasabah', 'metode'])
-            ->where('status', 'pending')
             ->orderBy('tanggal_pengajuan', 'desc')
             ->paginate(10);
 
@@ -23,7 +22,7 @@ class PencairanSaldoController extends Controller
     }
 
     /**
-     * Form untuk admin membuat pengajuan pencairan saldo baru.
+     * Form untuk admin membuat penarikan/pencairan saldo baru.
      */
     public function create()
     {
@@ -35,72 +34,64 @@ class PencairanSaldoController extends Controller
     }
 
     /**
-     * Simpan pengajuan pencairan saldo baru (status: pending).
+     * Simpan penarikan saldo baru (langsung dipotong & disetujui).
      */
     public function store(Request $request)
     {
+        // 1. Bersihkan format titik jika jumlah_pencairan dikirim berformat ribuan (misal "50.000")
+        if ($request->has('jumlah_pencairan')) {
+            $request->merge([
+                'jumlah_pencairan' => str_replace('.', '', $request->jumlah_pencairan)
+            ]);
+        }
+
+        // 2. Validasi input
         $request->validate([
-            'nasabah_id' => 'required|exists:nasabah,id',
-            'metode_id' => 'nullable|exists:metode_pencairan,id',
+            'nasabah_id'       => 'required|exists:nasabah,id',
             'jumlah_pencairan' => 'required|numeric|min:1',
         ]);
 
+        // 3. Cek kecukupan saldo nasabah
         $saldo = Saldo::where('nasabah_id', $request->nasabah_id)->first();
 
         if (!$saldo || $saldo->saldo < $request->jumlah_pencairan) {
             return redirect()->back()->withInput()->withErrors([
-                'msg' => 'Saldo nasabah tidak mencukupi untuk pengajuan ini.'
+                'msg' => 'Saldo nasabah tidak mencukupi untuk penarikan ini.'
             ]);
         }
 
-        PencairanSaldo::create([
-            'nasabah_id' => $request->nasabah_id,
-            'metode_id' => $request->metode_id,
-            'jumlah_pencairan' => $request->jumlah_pencairan,
-            'tanggal_pengajuan' => now(),
-            'status' => 'pending',
-        ]);
+        // 4. Potong Saldo & Simpan Transaksi Penarikan (Status Langsung Disetujui)
+        DB::transaction(function () use ($request, $saldo) {
+            // Potong saldo nasabah langsung
+            $saldo->decrement('saldo', $request->jumlah_pencairan);
 
-        Alert::success('Berhasil!', 'Pengajuan pencairan saldo berhasil dibuat.')->autoclose(3000);
+            // Simpan record pencairan saldo
+            PencairanSaldo::create([
+                'nasabah_id'        => $request->nasabah_id,
+                'metode_id'         => null,
+                'jumlah_pencairan'  => $request->jumlah_pencairan,
+                'tanggal_pengajuan' => now(),
+                'tanggal_proses'    => now(),
+                'status'            => 'disetujui',
+                'keterangan'        => null,
+            ]);
+        });
+
+        Alert::success('Berhasil!', 'Penarikan saldo berhasil diproses.')->autoclose(3000);
         return redirect()->route('admin.tarik-saldo.index');
     }
 
     /**
-     * Ambil daftar metode pencairan milik nasabah tertentu beserta saldo
-     * terkini (dipanggil via AJAX saat admin memilih nasabah di form create).
+     * Ambil saldo terkini nasabah (dipanggil via AJAX saat memilih nasabah).
      */
     public function getMetodePencairan($nasabahId)
     {
-        $metode = MetodePencairan::where('nasabah_id', $nasabahId)->get();
+        // Cari data saldo nasabah
         $saldo = Saldo::where('nasabah_id', $nasabahId)->first();
 
+        // Kembalikan response JSON berisi saldo murni
         return response()->json([
-            'metode' => $metode,
-            'saldo' => $saldo->saldo ?? 0,
-        ]);
-    }
-
-    /**
-     * Simpan metode pencairan baru untuk nasabah (dipanggil via AJAX dari
-     * modal "Tambah Metode Pencairan" di form create).
-     */
-    public function storeMetode(Request $request)
-    {
-        $request->validate([
-            'nasabah_id' => 'required|exists:nasabah,id',
-            'nama_metode_pencairan' => 'nullable|string|max:255',
-            'no_rek' => 'required|string|max:255',
-        ]);
-
-        $metode = MetodePencairan::create([
-            'nasabah_id' => $request->nasabah_id,
-            'nama_metode_pencairan' => $request->nama_metode_pencairan,
-            'no_rek' => $request->no_rek,
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'metode' => $metode,
+            'saldo' => $saldo ? (float)$saldo->saldo : 0
         ]);
     }
 
@@ -118,13 +109,14 @@ class PencairanSaldoController extends Controller
             return redirect()->back()->withErrors(['msg' => 'Saldo tidak mencukupi untuk pencairan.']);
         }
 
-        $saldo->saldo -= $pencairan->jumlah_pencairan;
-        $saldo->tanggal_update = now();
-        $saldo->save();
+        DB::transaction(function () use ($pencairan, $saldo) {
+            $saldo->decrement('saldo', $pencairan->jumlah_pencairan);
 
-        $pencairan->status = 'disetujui';
-        $pencairan->tanggal_proses = now();
-        $pencairan->save();
+            $pencairan->update([
+                'status'         => 'disetujui',
+                'tanggal_proses' => now(),
+            ]);
+        });
 
         return redirect()->route('admin.tarik-saldo.index')->with('success', 'Permintaan pencairan saldo telah disetujui.');
     }
@@ -141,10 +133,11 @@ class PencairanSaldoController extends Controller
             return redirect()->back()->withErrors(['msg' => 'Permintaan sudah diproses sebelumnya.']);
         }
 
-        $pencairan->status = 'ditolak';
-        $pencairan->keterangan = $request->keterangan;
-        $pencairan->tanggal_proses = now();
-        $pencairan->save();
+        $pencairan->update([
+            'status'         => 'ditolak',
+            'keterangan'     => $request->keterangan,
+            'tanggal_proses' => now(),
+        ]);
 
         return redirect()->route('admin.tarik-saldo.index')->with('error', 'Pengajuan pencairan saldo ditolak.');
     }

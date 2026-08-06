@@ -5,3 +5,4 @@
         </nav>
     </div>
 </footer>
+<script src="{{ asset('js/harga.js') }}"></script>

@@ -3,8 +3,9 @@
 @section('title', 'Tarik Saldo')
 
 @push('style')
-    <!-- CSS Libraries -->
-    {{-- <link rel="stylesheet" href="{{ asset('library/selectric/public/selectric.css') }}"> --}}
+    {{-- Select2 CSS & Bootstrap Theme untuk pencarian dan scroll dropdown --}}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-5-theme/1.2.0/select2-bootstrap.min.css" rel="stylesheet">
 @endpush
 
 @section('main')
@@ -32,10 +33,11 @@
                     <form action="{{ route('admin.tarik-saldo.store') }}" method="POST">
                         @csrf
 
+                        {{-- Dropdown Nasabah dengan Fitur Search & Scroll via Select2 --}}
                         <div class="form-group mb-3">
                             <label for="nasabah_id">Nasabah</label>
-                            <select name="nasabah_id" id="nasabah_id" class="form-control" required>
-                                <option value="">-- Pilih Nasabah --</option>
+                            <select name="nasabah_id" id="nasabah_id" class="form-control select2" required>
+                                <option value="">-- Cari / Pilih Nasabah --</option>
                                 @foreach ($nasabahs as $nasabah)
                                     <option value="{{ $nasabah->id }}"
                                         {{ old('nasabah_id') == $nasabah->id ? 'selected' : '' }}>
@@ -47,13 +49,14 @@
 
                         <div class="form-group mb-3">
                             <label for="saldo_info">Saldo Tersedia</label>
-                            <input type="text" id="saldo_info" class="form-control" value="Rp 0" disabled>
+                            <input type="text" id="saldo_info" class="form-control fw-bold" value="Rp 0" readonly>
                         </div>
 
+                        {{-- Tipe ubah ke text agar bisa diketik dengan titik ribuan (50.000) --}}
                         <div class="form-group mb-3">
-                            <label for="jumlah_pencairan">Jumlah Pencairan</label>
-                            <input type="number" name="jumlah_pencairan" id="jumlah_pencairan" class="form-control"
-                                min="1" required value="{{ old('jumlah_pencairan') }}">
+                            <label for="jumlah_pencairan">Jumlah Pencairan (Rp)</label>
+                            <input type="text" name="jumlah_pencairan" id="jumlah_pencairan" class="form-control"
+                                placeholder="Contoh: 50.000">
                         </div>
 
                         <button type="submit" class="btn btn-primary">Tarik Saldo</button>
@@ -66,34 +69,64 @@
 @endsection
 
 @push('scripts')
+    {{-- Select2 JS --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
     <script>
-        const nasabahSelect = document.getElementById('nasabah_id');
-        const saldoInfo = document.getElementById('saldo_info');
+        $(document).ready(function() {
+            // Inisialisasi Select2 dengan pencarian & scrollbar internal
+            $('#nasabah_id').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: '-- Cari / Pilih Nasabah --',
+                allowClear: true
+            });
 
-        function muatSaldoNasabah(nasabahId) {
-            saldoInfo.value = 'Memuat...';
+            const saldoInfo = document.getElementById('saldo_info');
+            const inputPencairan = document.getElementById('jumlah_pencairan');
 
-            if (!nasabahId) {
-                saldoInfo.value = 'Rp 0';
-                return;
+            // Helper Format Ribuan Indonesia
+            function formatRibuan(angka) {
+                return new Intl.NumberFormat('id-ID').format(angka);
             }
 
-            fetch(`/admin/tarik-saldo/saldo/${nasabahId}`)
-                .then(res => res.json())
-                .then(data => {
-                    saldoInfo.value = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.saldo);
-                })
-                .catch(() => {
+            // Load Saldo Nasabah via AJAX
+            function muatSaldoNasabah(nasabahId) {
+                saldoInfo.value = 'Memuat...';
+
+                if (!nasabahId) {
                     saldoInfo.value = 'Rp 0';
-                });
-        }
+                    return;
+                }
 
-        nasabahSelect.addEventListener('change', function() {
-            muatSaldoNasabah(this.value);
+                fetch(`/admin/tarik-saldo/saldo/${nasabahId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        saldoInfo.value = 'Rp ' + formatRibuan(data.saldo);
+                    })
+                    .catch(() => {
+                        saldoInfo.value = 'Rp 0';
+                    });
+            }
+
+            // Event Listener ketika Nasabah dipilih dari Select2
+            $('#nasabah_id').on('change', function() {
+                muatSaldoNasabah($(this).val());
+            });
+
+            // Trigger muat saldo jika ada value lama (misal dari old input setelah validasi)
+            if ($('#nasabah_id').val()) {
+                muatSaldoNasabah($('#nasabah_id').val());
+            }
+
+            // Live Format Ribuan saat mengetik Jumlah Pencairan
+            inputPencairan.addEventListener('input', function(e) {
+                let value = this.value.replace(/\D/g, ''); // Hapus semua karakter selain angka
+                if (value) {
+                    this.value = formatRibuan(value);
+                } else {
+                    this.value = '';
+                }
+            });
         });
-
-        if (nasabahSelect.value) {
-            muatSaldoNasabah(nasabahSelect.value);
-        }
     </script>
 @endpush
