@@ -63,14 +63,26 @@ class TransaksiController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi input dari form
+        // 1. Bersihkan format titik ribuan dari harga_per_kg sebelum validasi
+        $details = $request->detail_transaksi;
+        if (is_array($details)) {
+            foreach ($details as $key => $detail) {
+                if (isset($detail['harga_per_kg'])) {
+                    // Mengubah string "40.000" menjadi "40000"
+                    $details[$key]['harga_per_kg'] = str_replace('.', '', $detail['harga_per_kg']);
+                }
+            }
+            $request->merge(['detail_transaksi' => $details]);
+        }
+
+        // 2. Validasi input dari form
         $request->validate([
-            'kode_transaksi' => 'required|string|unique:transaksi,kode_transaksi',
-            'nasabah_id' => 'required|exists:nasabah,id',
-            'tanggal_transaksi' => 'required|date',
-            'detail_transaksi' => 'required|array|min:1',
-            'detail_transaksi.*.sampah_id' => 'required|exists:sampah,id',
-            'detail_transaksi.*.berat_kg' => 'required|numeric|min:0',
+            'kode_transaksi'                  => 'required|string|unique:transaksi,kode_transaksi',
+            'nasabah_id'                      => 'required|exists:nasabah,id',
+            'tanggal_transaksi'               => 'required|date',
+            'detail_transaksi'                => 'required|array|min:1',
+            'detail_transaksi.*.sampah_id'    => 'required|exists:sampah,id',
+            'detail_transaksi.*.berat_kg'     => 'required|numeric|min:0',
             'detail_transaksi.*.harga_per_kg' => 'required|numeric|min:0',
         ]);
 
@@ -79,9 +91,9 @@ class TransaksiController extends Controller
 
         // Simpan transaksi utama
         $transaksi = Transaksi::create([
-            'kode_transaksi' => $request->kode_transaksi,
-            'nasabah_id' => $request->nasabah_id,
-            'petugas_id' => $petugas_id,
+            'kode_transaksi'    => $request->kode_transaksi,
+            'nasabah_id'        => $request->nasabah_id,
+            'petugas_id'        => $petugas_id,
             'tanggal_transaksi' => $request->tanggal_transaksi,
         ]);
 
@@ -95,10 +107,10 @@ class TransaksiController extends Controller
             // Simpan detail transaksi
             DetailTransaksi::create([
                 'transaksi_id' => $transaksi->id,
-                'sampah_id' => $detail['sampah_id'],
-                'berat_kg' => $detail['berat_kg'],
+                'sampah_id'    => $detail['sampah_id'],
+                'berat_kg'     => $detail['berat_kg'],
                 'harga_per_kg' => $detail['harga_per_kg'],
-                'harga_total' => $hargaTotal,
+                'harga_total'  => $hargaTotal,
             ]);
         }
 
@@ -109,17 +121,18 @@ class TransaksiController extends Controller
         } else {
             Saldo::create([
                 'nasabah_id' => $request->nasabah_id,
-                'saldo' => $totalTransaksi,
+                'saldo'      => $totalTransaksi,
             ]);
         }
 
         // Redirect ke halaman cetak nota transaksi
         return redirect()->route('admin.transaksi.index', ['transaksi' => $transaksi->id])
             ->with([
-                'success' => 'Transaksi berhasil disimpan',
+                'success'      => 'Transaksi berhasil disimpan',
                 'transaksi_id' => $transaksi->id,
             ]);
     }
+
     public function print($id)
     {
         $transaksi = Transaksi::with(['nasabah', 'petugas', 'detailTransaksi.sampah'])->findOrFail($id);
@@ -141,12 +154,19 @@ class TransaksiController extends Controller
 
     public function show($id)
     {
-        $transaksi = Transaksi::with(['nasabah', 'detailTransaksi.sampah'])
+        // 1. Muat relasi nasabah beserta saldonya, petugas, dan detail transaksi
+        $transaksi = Transaksi::with(['nasabah.saldo', 'petugas', 'detailTransaksi.sampah'])
             ->findOrFail($id);
 
         $detailTransaksi = $transaksi->detailTransaksi;
 
-        return view('pages.admin.transaksi.show', compact('transaksi', 'detailTransaksi'));
+        // 2. Hitung total nilai transaksi dari seluruh detail setoran
+        $total_transaksi = $detailTransaksi->sum(function ($detail) {
+            return $detail->berat_kg * $detail->harga_per_kg;
+        });
+
+        // 3. Kirim variabel total_transaksi ke view
+        return view('pages.admin.transaksi.show', compact('transaksi', 'detailTransaksi', 'total_transaksi'));
     }
 
     public function destroy($id)

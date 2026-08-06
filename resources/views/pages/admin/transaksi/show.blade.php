@@ -51,7 +51,7 @@
                         <tr>
                             <td><strong>Total Transaksi</strong></td>
                             <td>:</td>
-                            <td>Rp{{ number_format($transaksi->total_harga, 2) }}</td>
+                            <td>Rp{{ number_format($total_transaksi, 0, ',', '.') }}</td>
                         </tr>
                     </table>
                 </div>

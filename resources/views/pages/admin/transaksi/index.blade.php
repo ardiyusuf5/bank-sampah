@@ -11,7 +11,7 @@
         <div>
             <h3 class="fw-bold mb-3">Transaksi Setoran</h3>
             <h6 class="op-7 mb-2">
-                Anda dapat mengelola semua transaksi, seperti mengedit, menghapus, dan lainnya.
+                Anda dapat mengelola semua transaksi, seperti melihat detail dan mencetaknya.
             </h6>
         </div>
         <div class="ms-md-auto py-2 py-md-0">

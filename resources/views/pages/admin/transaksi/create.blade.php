@@ -4,8 +4,7 @@
 
 @push('style')
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-5-theme/1.2.0/select2-bootstrap.min.css"
-        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-5-theme/1.2.0/select2-bootstrap.min.css" rel="stylesheet">
 @endpush
 
 @section('main')
@@ -17,17 +16,18 @@
             </h6>
         </div>
     </div>
+
     <div class="row">
         <div class="col-12">
             <form action="{{ route('admin.transaksi.store') }}" method="POST">
                 @csrf
+
+                {{-- Card Header Info --}}
                 <div class="card">
                     <div class="card-body">
-
                         <div class="form-group">
                             <label>Kode Setoran</label>
-                            <input class="form-control" type="text" name="kode_transaksi" value="{{ $kodeTransaksi }}"
-                                readonly>
+                            <input class="form-control" type="text" name="kode_transaksi" value="{{ $kodeTransaksi }}" readonly>
                         </div>
 
                         <div class="form-group">
@@ -42,14 +42,14 @@
 
                         <div class="form-group">
                             <label>Tanggal Setoran</label>
-                            <input type="date" name="tanggal_transaksi" value="{{ date('Y-m-d') }}" class="form-control"
-                                required>
+                            <input type="date" name="tanggal_transaksi" value="{{ date('Y-m-d') }}" class="form-control" required>
                         </div>
                     </div>
                 </div>
+
+                {{-- Card Detail Setoran --}}
                 <div class="card">
                     <div class="card-body">
-
                         <div class="form-group">
                             <label>Detail Setoran</label>
                             <table class="table table-bordered" id="setoran-detail-table">
@@ -65,52 +65,51 @@
                                 <tbody id="setoran-details">
                                     <tr>
                                         <td>
-                                            <select name="detail_transaksi[0][sampah_id]" class="form-control" required>
+                                            <select name="detail_transaksi[0][sampah_id]" class="form-control select-sampah" required>
                                                 <option value="">-- Pilih Sampah --</option>
                                                 @foreach ($stokSampah as $sampah)
-                                                    <option value="{{ $sampah->id }}"
-                                                        data-harga="{{ $sampah->harga_per_kg }}">
+                                                    {{-- Cast ke int agar data-harga bernilai murni (misal: 40000) --}}
+                                                    <option value="{{ $sampah->id }}" data-harga="{{ (int)$sampah->harga_per_kg }}">
                                                         {{ $sampah->nama_sampah }}
                                                     </option>
                                                 @endforeach
                                             </select>
                                         </td>
-                                        <td><input type="number" name="detail_transaksi[0][berat_kg]"
-                                                class="form-control berat-kg" placeholder="Berat (kg)" required>
+                                        <td>
+                                            <input type="number" step="any" name="detail_transaksi[0][berat_kg]" class="form-control berat-kg" placeholder="Berat (kg)" required>
                                         </td>
                                         <td>
-                                            <input type="number" name="detail_transaksi[0][harga_per_kg]"
-                                                class="form-control harga-per-kg" placeholder="Harga per kg" required
-                                                readonly>
+                                            {{-- Dikerjakan sebagai type="text" agar mendukung format ribuan titik (40.000) --}}
+                                            <input type="text" name="detail_transaksi[0][harga_per_kg]" class="form-control harga-per-kg" placeholder="Harga per kg" required readonly>
                                         </td>
-                                        <td class="total-harga">0</td>
+                                        <td class="total-harga fw-bold align-middle">0</td>
                                         <td>
                                             <button type="button" class="btn btn-danger btn-sm remove-row">Hapus</button>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
-                            <button type="button" class="btn btn-success" id="add-row">Tambah
-                                Sampah</button>
+                            <button type="button" class="btn btn-success" id="add-row">Tambah Sampah</button>
                         </div>
 
                         <div class="form-group">
                             <label>Total Transaksi (Rp)</label>
-                            <input type="text" id="total-transaksi" class="form-control" value="0" readonly>
+                            <input type="text" id="total-transaksi" class="form-control fw-bold" value="0" readonly>
                         </div>
                     </div>
 
                     <div class="card-footer text-right">
                         <button type="submit" class="btn btn-primary">Simpan Setoran</button>
                     </div>
+                </div>
             </form>
+
             @if (session('success'))
                 <script>
                     alert('{{ session('success') }}');
                     window.open("{{ route('admin.transaksi.print', session('transaksi_id')) }}", '_blank');
                 </script>
             @endif
-
         </div>
     </div>
 @endsection
@@ -123,57 +122,74 @@
 
             let rowIndex = 1;
 
+            // Helper Format Ribuan Indonesia (contoh: 40000 -> "40.000")
+            function formatRibuan(angka) {
+                return new Intl.NumberFormat('id-ID').format(angka);
+            }
+
+            // Hitung Ulang Total Keseluruhan
+            function calculateTotalTransaksi() {
+                let totalGrand = 0;
+                $('#setoran-details tr').each(function() {
+                    let row = $(this);
+                    let harga = parseFloat(row.find('select[name*="sampah_id"] option:selected').data('harga')) || 0;
+                    let berat = parseFloat(row.find('.berat-kg').val()) || 0;
+                    totalGrand += (harga * berat);
+                });
+                $('#total-transaksi').val(formatRibuan(totalGrand));
+            }
+
+            // Update Total per Baris
+            function updateRowTotal(row) {
+                let selectedOption = row.find('select[name*="sampah_id"] option:selected');
+                let hargaPerKg = parseFloat(selectedOption.data('harga')) || 0;
+                let berat = parseFloat(row.find('.berat-kg').val()) || 0;
+
+                // Tampilkan Harga Per KG dengan format 40.000
+                row.find('.harga-per-kg').val(hargaPerKg ? formatRibuan(hargaPerKg) : '');
+
+                // Tampilkan Total Sub-Baris dengan format 80.000
+                let totalHarga = hargaPerKg * berat;
+                row.find('.total-harga').text(formatRibuan(totalHarga));
+
+                calculateTotalTransaksi();
+            }
+
+            // Tambah Baris Baru
             $('#add-row').on('click', function() {
                 let newRow = `
                     <tr>
                         <td>
-                            <select name="detail_transaksi[${rowIndex}][sampah_id]" class="form-control" required>
+                            <select name="detail_transaksi[${rowIndex}][sampah_id]" class="form-control select-sampah" required>
                                 <option value="">-- Pilih Sampah --</option>
                                 @foreach ($stokSampah as $sampah)
-                                    <option value="{{ $sampah->id }}" data-harga="{{ $sampah->harga_per_kg }}">
+                                    <option value="{{ $sampah->id }}" data-harga="{{ (int)$sampah->harga_per_kg }}">
                                         {{ $sampah->nama_sampah }}
                                     </option>
                                 @endforeach
                             </select>
                         </td>
-                        <td><input type="number" name="detail_transaksi[${rowIndex}][berat_kg]" class="form-control berat-kg" placeholder="Berat (kg)" required></td>
-                        <td><input type="number" name="detail_transaksi[${rowIndex}][harga_per_kg]" class="form-control harga-per-kg" placeholder="Harga per kg" required readonly></td>
-                        <td class="total-harga">0</td>
+                        <td><input type="number" step="any" name="detail_transaksi[${rowIndex}][berat_kg]" class="form-control berat-kg" placeholder="Berat (kg)" required></td>
+                        <td><input type="text" name="detail_transaksi[${rowIndex}][harga_per_kg]" class="form-control harga-per-kg" placeholder="Harga per kg" required readonly></td>
+                        <td class="total-harga fw-bold align-middle">0</td>
                         <td><button type="button" class="btn btn-danger btn-sm remove-row">Hapus</button></td>
                     </tr>`;
+
                 $('#setoran-details').append(newRow);
-                $('.select2').select2();
                 rowIndex++;
             });
 
+            // Event Listener saat Sampah atau Berat Berubah
+            $(document).on('change input', 'select[name*="sampah_id"], .berat-kg', function() {
+                let row = $(this).closest('tr');
+                updateRowTotal(row);
+            });
+
+            // Hapus Baris
             $(document).on('click', '.remove-row', function() {
                 $(this).closest('tr').remove();
                 calculateTotalTransaksi();
             });
-
-            $(document).on('change', 'select[name*="sampah_id"], input[name*="berat_kg"]', function() {
-                let row = $(this).closest('tr');
-                let selectedOption = row.find('select[name*="sampah_id"]').find(':selected');
-                let hargaPerKg = selectedOption.data('harga') || 0;
-                row.find('input[name*="harga_per_kg"]').val(hargaPerKg);
-                updateTotal(row);
-            });
-
-            function updateTotal(row) {
-                let hargaPerKg = parseFloat(row.find('input[name*="harga_per_kg"]').val()) || 0;
-                let berat = parseFloat(row.find('input[name*="berat_kg"]').val()) || 0;
-                let totalHarga = hargaPerKg * berat;
-                row.find('.total-harga').text(totalHarga.toLocaleString());
-                calculateTotalTransaksi();
-            }
-
-            function calculateTotalTransaksi() {
-                let total = 0;
-                $('#setoran-details .total-harga').each(function() {
-                    total += parseFloat($(this).text().replace(/,/g, '')) || 0;
-                });
-                $('#total-transaksi').val(total.toLocaleString());
-            }
         });
     </script>
 @endpush
