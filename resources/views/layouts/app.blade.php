@@ -32,6 +32,25 @@
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.trendy.min.css') }}">
+    <style>
+        @media (max-width: 991.98px) {
+            .main-header-logo .sidenav-toggler {
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer !important;
+                z-index: 1005 !important;
+            }
+
+            html.nav_open .sidebar,
+            body.nav_open .sidebar,
+            .wrapper.nav_open .sidebar {
+                transform: translate3d(0, 0, 0) !important;
+                left: 0 !important;
+                z-index: 1050 !important;
+            }
+        }
+    </style>
 </head>
 
 <body class="trendy-layout">
@@ -92,7 +111,33 @@
     <script src="{{ asset('assets/js/plugin/sweetalert/sweetalert.min.js') }}"></script>
 
     <!-- Kaiadmin JS -->
-    <script src="{{ asset('assets/js/kaiadmin.trendy.min.js') }}"></script>
+    <script src="{{ asset('assets/js/kaiadmin.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            // Handle Left Hamburger Click on Mobile
+            $(document).on('click', '.sidenav-toggler', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                var isExpanded = $('html').hasClass('nav_open');
+                if (!isExpanded) {
+                    $('html, body, .wrapper').addClass('nav_open');
+                    $('.sidenav-toggler').addClass('toggled');
+                } else {
+                    $('html, body, .wrapper').removeClass('nav_open');
+                    $('.sidenav-toggler').removeClass('toggled');
+                }
+            });
+
+            // Close sidebar when clicking main-panel or body overlay
+            $(document).on('click', '.main-panel', function() {
+                if ($('html').hasClass('nav_open')) {
+                    $('html, body, .wrapper').removeClass('nav_open');
+                    $('.sidenav-toggler').removeClass('toggled');
+                }
+            });
+        });
+    </script>
 
     @stack('scripts')
 

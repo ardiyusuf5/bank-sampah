@@ -1,19 +1,24 @@
 <div class="main-header">
     <div class="main-header-logo">
         <!-- Logo Header -->
-        <div class="logo-header">
-
-            <a href="index.html" class="logo">
+        <div class="logo-header" data-background-color="dark">
+            <a href="{{ route('admin.dashboard') }}" class="logo">
                 <img src="{{ asset('assets/img/kaiadmin/logo_dark.svg') }}" alt="navbar brand" class="navbar-brand"
                     height="25">
             </a>
-            <button class="navbar-toggler sidenav-toggler ms-auto" type="button" data-bs-toggle="collapse"
-                data-bs-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
+
+            <!-- Hamburger Toggle Left -->
+            <button class="navbar-toggler sidenav-toggler ms-auto" type="button" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon">
                     <i class="gg-menu-right"></i>
                 </span>
             </button>
-            <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
+
+            <!-- Options Toggle Right -->
+            <button class="topbar-toggler more">
+                <i class="icon-options-vertical"></i>
+            </button>
+
             <div class="nav-toggle">
                 <button class="btn btn-toggle toggle-sidebar">
                     <i class="gg-menu-right"></i>
