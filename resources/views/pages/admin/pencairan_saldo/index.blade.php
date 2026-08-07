@@ -47,14 +47,14 @@
                     <div class="clearfix mb-3"></div>
 
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered table-head-bg-primary">
+                        <table class="table table-hover table-bordered align-middle table-head-bg-primary">
                             <thead>
                                 <tr>
                                     <th>No</th>
                                     <th>Tanggal Pengajuan</th>
                                     {{-- <th>Tanggal Proses</th> --}}
                                     <th>Nama Nasabah</th>
-                                    <th>Jumlah Tarik</th>
+                                    <th class="text-end">Jumlah Tarik</th>
                                     {{-- <th>Status</th>
                                     <th>Keterangan</th> --}}
                                 </tr>
@@ -63,11 +63,10 @@
                                 @forelse ($pencairanSaldo as $index => $pencairan)
                                     <tr>
                                         <td>{{ $pencairanSaldo->firstItem() + $index }}</td>
-                                        <td>{{ $pencairan->tanggal_pengajuan->format('d-m-Y H:i') }}</td>
-                                        {{-- <td>{{ $pencairan->tanggal_proses ? $pencairan->tanggal_proses->format('d-m-Y H:i') : '-' }} --}}
-                                        </td>
+                                        <td>{{ \Carbon\Carbon::parse($pencairan->tanggal_pengajuan)->translatedFormat('d F Y H:i') }}</td>
+                                        {{-- <td>{{ $pencairan->tanggal_proses ? \Carbon\Carbon::parse($pencairan->tanggal_proses)->translatedFormat('d F Y H:i') : '-' }} --}}
                                         <td>{{ $pencairan->nasabah->nama_lengkap }}</td>
-                                        <td>Rp{{ number_format($pencairan->jumlah_pencairan, 0, ',', '.') }}</td>
+                                        <td class="text-end">Rp {{ number_format($pencairan->jumlah_pencairan, 0, ',', '.') }}</td>
                                         {{-- <td>
                                             <span
                                                 class="badge badge-{{ $pencairan->status === 'disetujui' ? 'success' : ($pencairan->status === 'ditolak' ? 'danger' : 'warning') }}">
@@ -78,7 +77,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center">Belum ada riwayat tarik saldo.</td>
+                                        <td colspan="4" class="text-center">Belum ada riwayat tarik saldo.</td>
                                     </tr>
                                 @endforelse
                             </tbody>

@@ -63,7 +63,7 @@
                     <div class="card-title fw-bold">Saldo Tersedia</div>
                 </div>
                 <div class="card-body text-center">
-                    <h1 class="display-4 text-success fw-bold">Rp{{ number_format($nasabah->saldo->saldo ?? 0, 2) }}</h1>
+                    <h1 class="display-4 text-success fw-bold">Rp {{ number_format($nasabah->saldo->saldo ?? 0, 0, ',', '.') }}</h1>
                 </div>
             </div>
         </div>
@@ -78,7 +78,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered table-head-bg-primary">
+                        <table class="table table-hover table-bordered align-middle table-head-bg-primary">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -92,12 +92,12 @@
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $transaksi->kode_transaksi }}</td>
-                                        <td>{{ $transaksi->tanggal_transaksi }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($transaksi->tanggal_transaksi)->translatedFormat('d F Y') }}</td>
                                         <td>
                                             <ul>
                                                 @foreach ($transaksi->detailTransaksi as $detail)
-                                                    <li>{{ $detail->sampah->nama_sampah }} - {{ $detail->berat_kg }} kg
-                                                        (Rp{{ number_format($detail->harga_total, 2) }})
+                                                    <li>{{ $detail->sampah->nama_sampah }} - {{ number_format($detail->berat_kg, 0, ',', '.') }} kg
+                                                        (Rp {{ number_format($detail->harga_total, 0, ',', '.') }})
                                                     </li>
                                                 @endforeach
                                             </ul>
@@ -127,12 +127,12 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered table-head-bg-primary">
+                        <table class="table table-hover table-bordered align-middle table-head-bg-primary">
                             <thead>
                                 <tr>
                                     <th>No</th>
                                     <th>Tanggal Pengajuan</th>
-                                    <th>Jumlah</th>
+                                    <th class="text-end">Jumlah</th>
                                     <th>Status</th>
                                     <th>Keterangan</th>
                                 </tr>
@@ -141,8 +141,8 @@
                                 @forelse ($riwayatPenarikan as $index => $penarikan)
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
-                                        <td>{{ $penarikan->tanggal_pengajuan }}</td>
-                                        <td>Rp{{ number_format($penarikan->jumlah_pencairan, 2) }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($penarikan->tanggal_pengajuan)->translatedFormat('d F Y H:i') }}</td>
+                                        <td class="text-end">Rp {{ number_format($penarikan->jumlah_pencairan, 0, ',', '.') }}</td>
                                         <td>{{ ucfirst($penarikan->status) }}</td>
                                         <td>{{ $penarikan->keterangan ?? '-' }}</td>
                                     </tr>

@@ -43,14 +43,14 @@
                     <div class="clearfix mb-3"></div>
 
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered table-head-bg-primary">
+                        <table class="table table-hover table-bordered align-middle table-head-bg-primary">
                             <thead>
                                 <tr>
                                     <th>No</th>
                                     <th>Nama</th>
                                     {{-- <th>No. Registrasi</th> --}}
                                     {{-- <th>No. HP</th> --}}
-                                    <th>Saldo</th>
+                                    <th class="text-end">Saldo</th>
                                     {{-- <th>Status</th> --}}
                                     <th style="width: 250px">Aksi</th>
                                 </tr>
@@ -62,7 +62,7 @@
                                         <td>{{ $nasabah->nama_lengkap }}</td>
                                         {{-- <td>{{ $nasabah->no_registrasi }}</td> --}}
                                         {{-- <td>{{ $nasabah->no_hp }}</td> --}}
-                                        <td>Rp{{ number_format($nasabah->saldo->saldo, 0, ',', '.') }}</td>
+                                        <td class="text-end">Rp {{ number_format($nasabah->saldo->saldo, 0, ',', '.') }}</td>
                                         {{-- <td>
                                             @if ($nasabah->status === 'aktif')
                                                 <span class="badge bg-success text-white">Aktif</span>
@@ -95,7 +95,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8">
+                                        <td colspan="4">
                                             <div class="text-center">
                                                 Belum ada nasabah.
                                             </div>

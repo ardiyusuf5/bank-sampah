@@ -52,42 +52,44 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label>Detail Setoran</label>
-                            <table class="table table-bordered" id="setoran-detail-table">
-                                <thead>
-                                    <tr>
-                                        <th>Jenis Sampah</th>
-                                        <th>Berat (kg)</th>
-                                        <th>Harga per kg (Rp)</th>
-                                        <th>Total (Rp)</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="setoran-details">
-                                    <tr>
-                                        <td>
-                                            <select name="detail_transaksi[0][sampah_id]" class="form-control select-sampah" required>
-                                                <option value="">-- Pilih Sampah --</option>
-                                                @foreach ($stokSampah as $sampah)
-                                                    {{-- Cast ke int agar data-harga bernilai murni (misal: 40000) --}}
-                                                    <option value="{{ $sampah->id }}" data-harga="{{ (int)$sampah->harga_per_kg }}">
-                                                        {{ $sampah->nama_sampah }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <input type="number" step="any" name="detail_transaksi[0][berat_kg]" class="form-control berat-kg" placeholder="Berat (kg)" min="0" oninput="if(this.value < 0) this.value = 0;"  required>
-                                        </td>
-                                        <td>
-                                            <input type="text" name="detail_transaksi[0][harga_per_kg]" class="form-control harga-per-kg" placeholder="Harga per kg" required readonly>
-                                        </td>
-                                        <td class="total-harga fw-bold align-middle">0</td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger btn-sm remove-row">Hapus</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered align-middle" id="setoran-detail-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Jenis Sampah</th>
+                                            <th class="text-end">Berat (kg)</th>
+                                            <th class="text-end">Harga per kg (Rp)</th>
+                                            <th class="text-end">Total (Rp)</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="setoran-details">
+                                        <tr>
+                                            <td>
+                                                <select name="detail_transaksi[0][sampah_id]" class="form-control select-sampah" required>
+                                                    <option value="">-- Pilih Sampah --</option>
+                                                    @foreach ($stokSampah as $sampah)
+                                                        <option value="{{ $sampah->id }}" data-harga="{{ (int) $sampah->harga_per_kg }}">
+                                                            {{ $sampah->nama_sampah }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" step="any" name="detail_transaksi[0][berat_kg]" class="form-control berat-kg text-end" placeholder="Berat (kg)" min="0" oninput="if(this.value < 0) this.value = 0;" required>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control harga-per-kg-display text-end" placeholder="Harga per kg" readonly>
+                                                <input type="hidden" name="detail_transaksi[0][harga_per_kg]" class="harga-per-kg" value="0">
+                                            </td>
+                                            <td class="total-harga fw-bold text-end">0</td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger btn-sm remove-row">Hapus</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                             <button type="button" class="btn btn-success" id="add-row">Tambah Sampah</button>
                         </div>
 
@@ -144,8 +146,8 @@
                 let hargaPerKg = parseFloat(selectedOption.data('harga')) || 0;
                 let berat = parseFloat(row.find('.berat-kg').val()) || 0;
 
-                // Tampilkan Harga Per KG dengan format 40.000
-                row.find('.harga-per-kg').val(hargaPerKg ? formatRibuan(hargaPerKg) : '');
+                row.find('.harga-per-kg-display').val(hargaPerKg ? formatRibuan(hargaPerKg) : '');
+                row.find('.harga-per-kg').val(hargaPerKg);
 
                 // Tampilkan Total Sub-Baris dengan format 80.000
                 let totalHarga = hargaPerKg * berat;
@@ -168,9 +170,12 @@
                                 @endforeach
                             </select>
                         </td>
-                        <td><input type="number" step="any" name="detail_transaksi[${rowIndex}][berat_kg]" class="form-control berat-kg" placeholder="Berat (kg)" required></td>
-                        <td><input type="text" name="detail_transaksi[${rowIndex}][harga_per_kg]" class="form-control harga-per-kg" placeholder="Harga per kg" required readonly></td>
-                        <td class="total-harga fw-bold align-middle">0</td>
+                        <td><input type="number" step="any" name="detail_transaksi[${rowIndex}][berat_kg]" class="form-control berat-kg text-end" placeholder="Berat (kg)" required></td>
+                        <td>
+                            <input type="text" class="form-control harga-per-kg-display text-end" placeholder="Harga per kg" readonly>
+                            <input type="hidden" name="detail_transaksi[${rowIndex}][harga_per_kg]" class="harga-per-kg" value="0">
+                        </td>
+                        <td class="total-harga fw-bold text-end">0</td>
                         <td><button type="button" class="btn btn-danger btn-sm remove-row">Hapus</button></td>
                     </tr>`;
 

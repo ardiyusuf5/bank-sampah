@@ -25,12 +25,12 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered table-head-bg-primary">
+                        <table class="table table-hover table-bordered align-middle table-head-bg-primary">
                             <thead>
                                 <tr>
                                     <th>No</th>
                                     <th>Nama Sampah</th>
-                                    <th>Harga per Kg</th>
+                                    <th class="text-end">Harga per Kg</th>
                                     {{-- <th>Gambar</th> --}}
                                     <th>Aksi</th>
                                 </tr>
@@ -40,7 +40,7 @@
                                     <tr>
                                         <td>{{ $sampahs->firstItem() + $index }}</td>
                                         <td>{{ $sampah->nama_sampah }}</td>
-                                        <td>Rp{{ number_format($sampah->harga_per_kg, 0, ',', '.') }}</td>
+                                        <td class="text-end">Rp {{ number_format($sampah->harga_per_kg, 0, ',', '.') }}</td>
                                         {{-- <td>
                                             @if ($sampah->gambar)
                                                 <img src="{{ asset('storage/sampah/' . $sampah->gambar) }}"

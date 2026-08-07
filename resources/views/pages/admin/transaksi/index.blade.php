@@ -44,14 +44,14 @@
                     @endif
 
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered table-head-bg-primary">
+                        <table class="table table-hover table-bordered align-middle table-head-bg-primary">
                             <thead>
                                 <tr>
                                     <th>No</th>
                                     <th>Tanggal Setoran</th>
                                     <th>Nama Nasabah</th>
-                                    <th>Berat (kg)</th>
-                                    <th>Total (Rp)</th>
+                                    <th class="text-end">Berat (kg)</th>
+                                    <th class="text-end">Total (Rp)</th>
                                     <th style="width: 250px">Aksi</th>
                                 </tr>
                             </thead>
@@ -59,10 +59,10 @@
                                 @forelse ($transaksis as $index => $transaksi)
                                     <tr>
                                         <td>{{ $transaksis->firstItem() + $index }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($transaksi->tanggal_transaksi)->format('d-m-Y') }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($transaksi->tanggal_transaksi)->translatedFormat('d F Y') }}</td>
                                         <td>{{ $transaksi->nasabah->nama_lengkap }}</td>
-                                        <td>{{ number_format($transaksi->total_berat, 2, ',', '.') }}</td>
-                                        <td>Rp{{ number_format($transaksi->total_transaksi, 0, ',', '.') }}</td>
+                                        <td class="text-end">{{ number_format($transaksi->total_berat, 0, ',', '.') }}</td>
+                                        <td class="text-end">Rp {{ number_format($transaksi->total_transaksi, 0, ',', '.') }}</td>
                                         <td>
                                             <a href="{{ route('admin.transaksi.show', $transaksi->id) }}"
                                                 class="btn btn-sm btn-info me-2">

@@ -36,7 +36,7 @@
                         <tr>
                             <td><strong>Tanggal Transaksi</strong></td>
                             <td>:</td>
-                            <td>{{ \Carbon\Carbon::parse($transaksi->created_at)->format('d-m-Y H:i') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($transaksi->created_at)->translatedFormat('d F Y H:i') }}</td>
                         </tr>
                         <tr>
                             <td><strong>Nama Nasabah</strong></td>
@@ -51,7 +51,7 @@
                         <tr>
                             <td><strong>Total Transaksi</strong></td>
                             <td>:</td>
-                            <td>Rp{{ number_format($total_transaksi, 0, ',', '.') }}</td>
+                            <td class="text-end">Rp {{ number_format($total_transaksi, 0, ',', '.') }}</td>
                         </tr>
                     </table>
                 </div>
@@ -68,14 +68,14 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered table-head-bg-primary">
+                        <table class="table table-hover table-bordered align-middle table-head-bg-primary">
                             <thead>
                                 <tr>
                                     <th>No</th>
                                     <th>Nama Sampah</th>
-                                    <th>Berat (kg)</th>
-                                    <th>Harga/Kg</th>
-                                    <th>Total Harga</th>
+                                    <th class="text-end">Berat (kg)</th>
+                                    <th class="text-end">Harga/Kg</th>
+                                    <th class="text-end">Total Harga</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -83,9 +83,9 @@
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $detail->sampah->nama_sampah }}</td>
-                                        <td>{{ $detail->berat_kg }}</td>
-                                        <td>Rp{{ number_format($detail->harga_per_kg, 2) }}</td>
-                                        <td>Rp{{ number_format($detail->harga_total, 2) }}</td>
+                                        <td class="text-end">{{ number_format($detail->berat_kg, 0, ',', '.') }}</td>
+                                        <td class="text-end">Rp {{ number_format($detail->harga_per_kg, 0, ',', '.') }}</td>
+                                        <td class="text-end">Rp {{ number_format($detail->harga_total, 0, ',', '.') }}</td>
                                     </tr>
                                 @empty
                                     <tr>

@@ -56,7 +56,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered table-head-bg-primary">
+                        <table class="table table-hover table-bordered align-middle table-head-bg-primary">
                             <thead class="bg-primary text-white">
                                 <tr>
                                     <th>No</th>
@@ -71,21 +71,21 @@
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $pengiriman->kode_pengiriman }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($pengiriman->tanggal_pengiriman)->format('d M Y') }}
+                                        <td>{{ \Carbon\Carbon::parse($pengiriman->tanggal_pengiriman)->translatedFormat('d F Y') }}
                                         </td>
                                         <td>
                                             <ul class="list-unstyled mb-0">
                                                 @foreach ($pengiriman->detailPengiriman as $detail)
                                                     <li>
                                                         {{ $detail->sampah->nama_sampah }} -
-                                                        {{ $detail->berat_kg }} kg
-                                                        (Rp{{ number_format($detail->harga_total, 2) }})
+                                                        {{ number_format($detail->berat_kg, 0, ',', '.') }} kg
+                                                        (Rp {{ number_format($detail->harga_total, 0, ',', '.') }})
                                                     </li>
                                                 @endforeach
                                             </ul>
                                         </td>
-                                        <td>
-                                            Rp{{ number_format($pengiriman->detailPengiriman->sum('harga_total'), 2) }}
+                                        <td class="text-end">
+                                            Rp {{ number_format($pengiriman->detailPengiriman->sum('harga_total'), 0, ',', '.') }}
                                         </td>
                                     </tr>
                                 @empty

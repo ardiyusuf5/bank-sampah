@@ -25,15 +25,15 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered table-head-bg-primary">
+                        <table class="table table-hover table-bordered align-middle table-head-bg-primary">
                             <thead>
                                 <tr>
                                     <th>No</th>
                                     <th>Tanggal Pengiriman</th>
                                     <th>Kode Pengiriman</th>
                                     <th>Nama Pengepul</th>
-                                    <th>Total Berat (kg)</th>
-                                    <th>Jumlah Jenis Sampah</th>
+                                    <th class="text-end">Total Berat (kg)</th>
+                                    <th class="text-end">Jumlah Jenis Sampah</th>
                                     {{-- <th>Aksi</th> --}}
                                 </tr>
                             </thead>
@@ -41,11 +41,11 @@
                                 @forelse ($pengirimanSampah as $index => $pengiriman)
                                     <tr>
                                         <td>{{ $pengirimanSampah->firstItem() + $index }}</td>
-                                        <td>{{ $pengiriman->tanggal_pengiriman }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($pengiriman->tanggal_pengiriman)->translatedFormat('d F Y') }}</td>
                                         <td>{{ $pengiriman->kode_pengiriman }}</td>
                                         <td>{{ $pengiriman->pengepul->nama }}</td>
-                                        <td>{{ $pengiriman->total_berat }}</td>
-                                        <td>{{ $pengiriman->jumlah_jenis_sampah }}</td>
+                                        <td class="text-end">{{ number_format($pengiriman->total_berat, 0, ',', '.') }}</td>
+                                        <td class="text-end">{{ number_format($pengiriman->jumlah_jenis_sampah, 0, ',', '.') }}</td>
                                         {{-- <td>
                                         <form onsubmit="return confirm('Apakah Anda yakin?');"
                                                 action="{{ route('pengiriman.destroy', $pengiriman->id) }}" method="POST">

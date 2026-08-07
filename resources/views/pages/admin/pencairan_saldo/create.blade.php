@@ -54,9 +54,12 @@
 
                         {{-- Tipe ubah ke text agar bisa diketik dengan titik ribuan (50.000) --}}
                         <div class="form-group mb-3">
-                            <label for="jumlah_pencairan">Jumlah Pencairan (Rp)</label>
-                            <input type="text" name="jumlah_pencairan" id="jumlah_pencairan" class="form-control"
-                                placeholder="Contoh: 50.000">
+                            <label for="jumlah_pencairan_display">Jumlah Pencairan (Rp)</label>
+                            <input type="text" id="jumlah_pencairan_display" class="form-control"
+                                value="{{ old('jumlah_pencairan') ? number_format((int) old('jumlah_pencairan'), 0, ',', '.') : '' }}"
+                                placeholder="Contoh: 50.000" required>
+                            <input type="hidden" name="jumlah_pencairan" id="jumlah_pencairan"
+                                value="{{ old('jumlah_pencairan') }}">
                         </div>
 
                         <button type="submit" class="btn btn-primary">Tarik Saldo</button>
@@ -82,6 +85,7 @@
             });
 
             const saldoInfo = document.getElementById('saldo_info');
+            const inputPencairanDisplay = document.getElementById('jumlah_pencairan_display');
             const inputPencairan = document.getElementById('jumlah_pencairan');
 
             // Helper Format Ribuan Indonesia
@@ -103,8 +107,9 @@
                     .then(data => {
                         saldoInfo.value = 'Rp ' + formatRibuan(data.saldo);
                     })
-                    .catch(() => {
-                        saldoInfo.value = 'Rp 0';
+                    .catch((error) => {
+                        console.error('Gagal memuat saldo nasabah:', error);
+                        saldoInfo.value = 'Gagal memuat saldo';
                     });
             }
 
@@ -119,12 +124,14 @@
             }
 
             // Live Format Ribuan saat mengetik Jumlah Pencairan
-            inputPencairan.addEventListener('input', function(e) {
+            inputPencairanDisplay.addEventListener('input', function() {
                 let value = this.value.replace(/\D/g, ''); // Hapus semua karakter selain angka
                 if (value) {
                     this.value = formatRibuan(value);
+                    inputPencairan.value = value;
                 } else {
                     this.value = '';
+                    inputPencairan.value = '';
                 }
             });
         });

@@ -24,7 +24,7 @@
                     <div class="clearfix mb-3"></div>
 
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered table-head-bg-primary">
+                        <table class="table table-hover table-bordered align-middle table-head-bg-primary">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -37,7 +37,7 @@
                                 @foreach ($feedbacks as $index => $feedback)
                                     <tr>
                                         <td>{{ $feedbacks->firstItem() + $index }}</td>
-                                        <td>{{ $feedback->created_at->format('d-m-Y H:i') }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($feedback->created_at)->translatedFormat('d F Y H:i') }}</td>
                                         <td>{{ $feedback->nasabah->nama_lengkap }}</td>
                                         <td>
                                             <a href="{{ route('admin.feedback.show', $feedback->id) }}"

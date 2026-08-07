@@ -24,7 +24,7 @@
                 <div class="card-body">
                     <div class="clearfix mb-3"></div>
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered table-head-bg-primary">
+                        <table class="table table-hover table-bordered align-middle table-head-bg-primary">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -47,7 +47,7 @@
                                                 -
                                             @endif
                                         </td>
-                                        <td>{{ $artikel->created_at->format('d M Y') }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($artikel->created_at)->translatedFormat('d F Y') }}</td>
                                         <td>
                                             <a href="{{ route('admin.artikel.show', $artikel->id) }}"
                                                 class="btn btn-sm btn-info">Detail</a>

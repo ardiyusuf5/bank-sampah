@@ -36,30 +36,32 @@
                 <div class="col-6">
                     <div class="card-body">
                         @if ($aplikasi)
-                            <table class="table table-striped">
-                                <tbody>
-                                    <tr>
-                                        <td><strong>Nama Aplikasi</strong></td>
-                                        <td>:</td>
-                                        <td>{{ $aplikasi->nama_file }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Versi Aplikasi</strong></td>
-                                        <td>:</td>
-                                        <td>{{ $aplikasi->versi_aplikasi }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Ukuran File</strong></td>
-                                        <td>:</td>
-                                        <td>{{ number_format($aplikasi->ukuran_file / 1024, 2) }} KB</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Keterangan</strong></td>
-                                        <td>:</td>
-                                        <td>{{ $aplikasi->keterangan ?? '-' }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered align-middle">
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Nama Aplikasi</strong></td>
+                                            <td>:</td>
+                                            <td>{{ $aplikasi->nama_file }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Versi Aplikasi</strong></td>
+                                            <td>:</td>
+                                            <td>{{ $aplikasi->versi_aplikasi }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Ukuran File</strong></td>
+                                            <td>:</td>
+                                            <td class="text-end">{{ number_format($aplikasi->ukuran_file / 1024, 0, ',', '.') }} KB</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Keterangan</strong></td>
+                                            <td>:</td>
+                                            <td>{{ $aplikasi->keterangan ?? '-' }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                             <div class="mt-3">
                                 <!-- Tombol Update APK -->
                                 <a href="{{ route('admin.aplikasi.edit', $aplikasi->id) }}" class="btn btn-info">Update

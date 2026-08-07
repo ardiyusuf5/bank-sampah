@@ -53,51 +53,54 @@
 
                         <div class="form-group">
                             <label>Detail Pengiriman</label>
-                            <table class="table table-bordered" id="pengiriman-detail-table">
-                                <thead>
-                                    <tr>
-                                        <th>Jenis Sampah</th>
-                                        <th>Berat (Kg)</th>
-                                        <th>Stok Tersedia (Kg)</th>
-                                        <th>Harga/Kg (Rp)</th>
-                                        <th>Harga Total (Rp)</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="pengiriman-details">
-                                    <tr>
-                                        <td>
-                                            <select name="sampah_id[]" class="form-control sampah-select" required>
-                                                <option value="">-- Pilih Sampah --</option>
-                                                @foreach ($stokSampah as $sampah)
-                                                    <option value="{{ $sampah->id }}" data-stok="{{ $sampah->stok }}">
-                                                        {{ $sampah->nama_sampah }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <input type="number" name="berat_kg[]" class="form-control berat-input"
-                                                placeholder="Berat (kg)" required>
-                                        </td>
-                                        <td class="stok-tersedia"></td>
-                                        <td>
-                                            <input type="text" id="harga" inputmode="numeric" name="harga_per_kg[]" class="form-control harga-input"
-                                                placeholder="Harga per Kg" required>
-                                        </td>
-                                        <td class="harga-total">0</td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger btn-sm remove-row">Hapus</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered align-middle" id="pengiriman-detail-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Jenis Sampah</th>
+                                            <th class="text-end">Berat (Kg)</th>
+                                            <th class="text-end">Stok Tersedia (Kg)</th>
+                                            <th class="text-end">Harga/Kg (Rp)</th>
+                                            <th class="text-end">Harga Total (Rp)</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="pengiriman-details">
+                                        <tr>
+                                            <td>
+                                                <select name="sampah_id[]" class="form-control sampah-select" required>
+                                                    <option value="">-- Pilih Sampah --</option>
+                                                    @foreach ($stokSampah as $sampah)
+                                                        <option value="{{ $sampah->id }}" data-stok="{{ $sampah->stok }}">
+                                                            {{ $sampah->nama_sampah }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="berat_kg[]" class="form-control berat-input text-end"
+                                                    placeholder="Berat (kg)" required>
+                                            </td>
+                                            <td class="stok-tersedia text-end">0 kg</td>
+                                            <td>
+                                                <input type="text" inputmode="numeric" class="form-control harga-display text-end"
+                                                    placeholder="Harga per Kg" required>
+                                                <input type="hidden" name="harga_per_kg[]" class="harga-input" value="0">
+                                            </td>
+                                            <td class="harga-total text-end">0</td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger btn-sm remove-row">Hapus</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                             <button type="button" class="btn btn-success" id="add-row">Tambah Jenis Sampah</button>
                         </div>
 
                         <div class="form-group mt-4">
                             <label>Total Harga (Rp)</label>
-                            <input type="text" id="total-harga" class="form-control" value="0" readonly>
+                            <input type="text" id="total-harga" class="form-control text-end" value="0" readonly>
                         </div>
 
                         <div class="card-footer text-right">
@@ -134,10 +137,13 @@
                             @endforeach
                         </select>
                     </td>
-                    <td><input type="number" name="berat_kg[]" class="form-control berat-input" placeholder="Berat (kg)" required></td>
-                    <td class="stok-tersedia"></td>
-                    <td><input type="number" name="harga_per_kg[]" class="form-control harga-input" placeholder="Harga per Kg" required></td>
-                    <td class="harga-total">0</td>
+                    <td><input type="number" name="berat_kg[]" class="form-control berat-input text-end" placeholder="Berat (kg)" required></td>
+                    <td class="stok-tersedia text-end">0 kg</td>
+                    <td>
+                        <input type="text" inputmode="numeric" class="form-control harga-display text-end" placeholder="Harga per Kg" required>
+                        <input type="hidden" name="harga_per_kg[]" class="harga-input" value="0">
+                    </td>
+                    <td class="harga-total text-end">0</td>
                     <td>
                         <button type="button" class="btn btn-danger btn-sm remove-row">Hapus</button>
                     </td>
@@ -185,7 +191,14 @@
                 calculateTotalPrice();
             });
 
-            // Perhitungan harga total per baris
+            $(document).on('input', '.harga-display', function() {
+                let angka = this.value.replace(/\D/g, '');
+                this.value = angka ? new Intl.NumberFormat('id-ID').format(angka) : '';
+                $(this).closest('td').find('.harga-input').val(angka || 0);
+                calculateRowPrice($(this).closest('tr'));
+                calculateTotalPrice();
+            });
+
             $(document).on('input', '.berat-input, .harga-input', function() {
                 calculateRowPrice($(this).closest('tr'));
                 calculateTotalPrice();

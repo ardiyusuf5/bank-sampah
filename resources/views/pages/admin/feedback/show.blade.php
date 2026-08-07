@@ -39,7 +39,7 @@
                         <div class="form-group">
                             <label><strong>Tanggal Masuk:</strong></label>
                             <input type="text" class="form-control"
-                                value="{{ $feedback->created_at->format('d-m-Y H:i') }}" disabled>
+                                value="{{ \Carbon\Carbon::parse($feedback->created_at)->translatedFormat('d F Y H:i') }}" disabled>
                         </div>
                         <div class="form-group">
                             <a href="{{ route('admin.feedback.index') }}" class="btn btn-secondary">Kembali</a>

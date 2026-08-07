@@ -2,6 +2,16 @@
 
 @section('title', 'Laporan Operasional')
 
+@push('style')
+    <style>
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+@endpush
+
 @section('main')
     <div class="row">
         <div class="col-md-12">
@@ -77,13 +87,15 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title">Hasil Laporan {{ ucfirst(request('jenis_laporan')) }}</h4>
-                        <a href="{{ route('admin.laporan.print', request()->all()) }}" target="_blank" class="btn btn-secondary btn-sm">
-                            <i class="fas fa-print"></i> Cetak Laporan
-                        </a>
+                        <div class="no-print">
+                            <a href="{{ route('admin.laporan.print', request()->all()) }}" target="_blank" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-print"></i> Cetak Laporan
+                            </a>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover table-bordered">
+                            <table class="table table-hover table-bordered align-middle">
                                 <thead>
                                     <tr>
                                         @if (request('jenis_laporan') === 'transaksi')
@@ -95,7 +107,7 @@
                                         @else
                                             <th>No</th>
                                             <th>Nasabah</th>
-                                            <th class="text-right">Jumlah Pencairan</th>
+                                            <th class="text-end">Jumlah Pencairan</th>
                                             <th>Tanggal Proses</th>
                                         @endif
                                     </tr>
@@ -120,7 +132,7 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $item->nasabah->nama_lengkap ?? '-' }}</td>
-                                                <td class="text-right">Rp {{ number_format($item->jumlah_pencairan, 0, ',', '.') }}</td>
+                                                <td class="text-end">Rp {{ number_format($item->jumlah_pencairan, 0, ',', '.') }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($item->tanggal_proses ?? $item->tanggal_pengajuan)->translatedFormat('d F Y H:i') }}</td>
                                             </tr>
                                         @empty
