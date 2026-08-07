@@ -10,9 +10,16 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class PengepulController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $pengepuls = Pengepul::paginate(10);
+        $pengepuls = Pengepul::query()
+            // Filter berdasarkan kolom 'nama' di database menggunakan input 'name' dari form
+            ->when($request->filled('name'), function ($query) use ($request) {
+                $query->where('nama', 'like', '%'.$request->name.'%');
+            })
+            ->paginate(10)
+            // Mempertahankan query string ?name=... saat klik halaman pagination
+            ->withQueryString();
 
         return view('pages.admin.pengepul.index', compact('pengepuls'));
     }
@@ -31,6 +38,7 @@ class PengepulController extends Controller
         ]);
 
         Pengepul::create($request->all());
+
         return redirect()->route('admin.pengepul.index')->with('success', 'Pengepul berhasil ditambahkan.');
     }
 
@@ -72,13 +80,30 @@ class PengepulController extends Controller
         ]);
 
         Alert::success('Berhasil!', 'Pengepul berhasil diperbarui.')->autoclose(3000);
+
         return redirect()->route('admin.pengepul.index');
     }
 
-
-    public function destroy(Pengepul $pengepul)
+    public function destroy($id)
     {
-        $pengepul->delete();
-        return redirect()->route('admin.pengepul.index')->with('success', 'Pengepul berhasil dihapus.');
+        // 1. Cari data pengepul berdasarkan ID
+        $pengepul = Pengepul::findOrFail($id);
+
+        // 2. Cek apakah ada riwayat pengiriman
+        if ($pengepul->pengiriman()->exists()) {
+            Alert::error('Gagal Hapus!', 'Data pengepul tidak dapat dihapus karena memiliki riwayat pengiriman.')->autoclose(3000);
+
+            return redirect()->route('admin.pengepul.index');
+        }
+
+        // 3. Eksekusi hapus
+        try {
+            $pengepul->delete();
+            Alert::success('Berhasil!', 'Data pengepul berhasil dihapus.')->autoclose(3000);
+        } catch (\Exception $e) {
+            Alert::error('Gagal!', 'Terjadi kesalahan sistem saat menghapus data.')->autoclose(3000);
+        }
+
+        return redirect()->route('admin.pengepul.index');
     }
 }

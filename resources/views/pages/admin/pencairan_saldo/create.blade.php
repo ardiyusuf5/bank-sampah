@@ -3,9 +3,19 @@
 @section('title', 'Tarik Saldo')
 
 @push('style')
-    {{-- Select2 CSS & Bootstrap Theme untuk pencarian dan scroll dropdown --}}
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-5-theme/1.2.0/select2-bootstrap.min.css" rel="stylesheet">
+    {{-- Select2 CSS & Corrected Bootstrap 5 Theme CDN --}}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+
+    {{-- Fix Scrollbar & Max Height Dropdown Select2 --}}
+    <style>
+        .select2-container--bootstrap-5 .select2-dropdown .select2-results__options,
+        .select2-results__options {
+            max-height: 220px !important;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
 @endpush
 
 @section('main')
@@ -52,7 +62,6 @@
                             <input type="text" id="saldo_info" class="form-control fw-bold" value="Rp 0" readonly>
                         </div>
 
-                        {{-- Tipe ubah ke text agar bisa diketik dengan titik ribuan (50.000) --}}
                         <div class="form-group mb-3">
                             <label for="jumlah_pencairan_display">Jumlah Pencairan (Rp)</label>
                             <input type="text" id="jumlah_pencairan_display" class="form-control"
@@ -73,10 +82,10 @@
 
 @push('scripts')
     {{-- Select2 JS --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Inisialisasi Select2 dengan pencarian & scrollbar internal
+            // Inisialisasi Select2
             $('#nasabah_id').select2({
                 theme: 'bootstrap-5',
                 width: '100%',
@@ -88,12 +97,10 @@
             const inputPencairanDisplay = document.getElementById('jumlah_pencairan_display');
             const inputPencairan = document.getElementById('jumlah_pencairan');
 
-            // Helper Format Ribuan Indonesia
             function formatRibuan(angka) {
                 return new Intl.NumberFormat('id-ID').format(angka);
             }
 
-            // Load Saldo Nasabah via AJAX
             function muatSaldoNasabah(nasabahId) {
                 saldoInfo.value = 'Memuat...';
 
@@ -113,19 +120,16 @@
                     });
             }
 
-            // Event Listener ketika Nasabah dipilih dari Select2
             $('#nasabah_id').on('change', function() {
                 muatSaldoNasabah($(this).val());
             });
 
-            // Trigger muat saldo jika ada value lama (misal dari old input setelah validasi)
             if ($('#nasabah_id').val()) {
                 muatSaldoNasabah($('#nasabah_id').val());
             }
 
-            // Live Format Ribuan saat mengetik Jumlah Pencairan
             inputPencairanDisplay.addEventListener('input', function() {
-                let value = this.value.replace(/\D/g, ''); // Hapus semua karakter selain angka
+                let value = this.value.replace(/\D/g, '');
                 if (value) {
                     this.value = formatRibuan(value);
                     inputPencairan.value = value;

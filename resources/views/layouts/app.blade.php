@@ -21,7 +21,7 @@
                 urls: ['{{ asset('assets/css/fonts.min.css') }}']
             },
             active: function() {
-                sessionStorage.fonts = true;
+                sessionStoragefonts = true;
             }
         });
     </script>
@@ -32,6 +32,32 @@
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.trendy.min.css') }}">
+
+    <!-- CSS Override Slide Mobile Sidebar -->
+    <style>
+        @media (max-width: 991.98px) {
+            html.nav_open .sidebar {
+                transform: translate3d(0, 0, 0) !important;
+                left: 0 !important;
+                z-index: 1050 !important;
+                visibility: visible !important;
+            }
+
+            html.nav_open .sidebar .sidebar-wrapper {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+
+            html.nav_open .main-panel::before {
+                content: '';
+                position: fixed;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1040;
+            }
+        }
+    </style>
 </head>
 
 <body class="trendy-layout">
@@ -50,52 +76,47 @@
         </div>
     </div>
 
-    <!--   Core JS Files   -->
+    <!-- Core JS Files -->
     <script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
     <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
     <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
 
-    <!-- jQuery Scrollbar -->
+    <!-- Plugins -->
     <script src="{{ asset('assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js') }}"></script>
-
-    <!-- Moment JS -->
     <script src="{{ asset('assets/js/plugin/moment/moment.min.js') }}"></script>
-
-    <!-- jQuery Sparkline -->
     <script src="{{ asset('assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js') }}"></script>
-
-    <!-- Chart Circle -->
     <script src="{{ asset('assets/js/plugin/chart-circle/circles.min.js') }}"></script>
-
-    <!-- Datatables -->
     <script src="{{ asset('assets/js/plugin/datatables/datatables.min.js') }}"></script>
-
-    <!-- Dropzone -->
     <script src="{{ asset('assets/js/plugin/dropzone/dropzone.min.js') }}"></script>
-
-    <!-- Fullcalendar -->
     <script src="{{ asset('assets/js/plugin/fullcalendar/fullcalendar.min.js') }}"></script>
-
-    <!-- DateTimePicker -->
     <script src="{{ asset('assets/js/plugin/datepicker/bootstrap-datetimepicker.min.js') }}"></script>
-
-    <!-- Bootstrap Tagsinput -->
     <script src="{{ asset('assets/js/plugin/bootstrap-tagsinput/bootstrap-tagsinput.min.js') }}"></script>
-
-    <!-- jQuery Validation -->
-    <script src="{{ asset('assets/js/plugin/jquery.validate/jquery.validate.min.js') }}"></script>
-
-    <!-- Select2 -->
-    <script src="{{ asset('assets/js/plugin/select2/select2.full.min.js') }}"></script>
-
-    <!-- Sweet Alert -->
-    <script src="{{ asset('assets/js/plugin/sweetalert/sweetalert.min.js') }}"></script>
 
     <!-- Kaiadmin JS -->
     <script src="{{ asset('assets/js/kaiadmin.trendy.min.js') }}"></script>
 
-    @stack('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- Toggle Sidebar Script -->
+    <script>
+        $(document).ready(function() {
+            // Event Klik Tombol Hamburger Mobile
+            $(document).off('click', '#btnMobileMenu').on('click', '#btnMobileMenu', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $('html').toggleClass('nav_open');
+            });
+
+            // Tutup Sidebar jika area luar (overlay) diklik
+            $(document).on('click', '.main-panel', function() {
+                if ($('html').hasClass('nav_open')) {
+                    $('html').removeClass('nav_open');
+                }
+            });
+        });
+    </script>
+
+    @stack('scripts')
 </body>
 
 </html>

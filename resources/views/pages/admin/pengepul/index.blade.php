@@ -54,7 +54,7 @@
                             <tbody>
                                 @foreach ($pengepuls as $pengepul)
                                     <tr>
-                                        <td>{{ $pengepul->id }}</td>
+                                        <td>{{ $loop->iteration }}</td>
                                         <td>{{ $pengepul->nama }}</td>
                                         <td>{{ $pengepul->alamat }}</td>
                                         <td>{{ $pengepul->kontak }}</td>

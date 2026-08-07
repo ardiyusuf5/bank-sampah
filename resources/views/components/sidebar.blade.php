@@ -6,14 +6,14 @@
             <a href="{{ auth()->user()->role == 'admin' ? route('admin.dashboard') : route('petugas.dashboard') }}" class="logo">
                 <img src="{{ asset('assets/img/kaiadmin/logo_dark.svg') }}" alt="navbar brand" class="navbar-brand" height="25">
             </a>
-            <div class="nav-toggle">
+            {{-- <div class="nav-toggle">
                 <button class="btn btn-toggle toggle-sidebar">
                     <i class="gg-menu-right"></i>
                 </button>
                 <button class="btn btn-toggle sidenav-toggler">
                     <i class="gg-menu-left"></i>
                 </button>
-            </div>
+            </div> --}}
             <button class="topbar-toggler more">
                 <i class="gg-more-vertical-alt"></i>
             </button>
@@ -182,7 +182,7 @@
 
                 <!-- Logout -->
                 <li class="nav-item mt-3">
-                    <a href="#" class="text-danger" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <a href="#" class="text-danger" onclick="confirmLogout(event)">
                         <i class="fas fa-sign-out-alt text-danger"></i>
                         <p>Keluar</p>
                     </a>
@@ -192,3 +192,26 @@
     </div>
 </div>
 <!-- End Sidebar -->
+
+@push('scripts')
+<script>
+    function confirmLogout(event) {
+        event.preventDefault();
+
+        Swal.fire({
+            title: 'Konfirmasi Keluar',
+            text: 'Apakah Anda yakin ingin mengakhiri sesi ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, Keluar',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('logout-form').submit();
+            }
+        });
+    }
+</script>
+@endpush

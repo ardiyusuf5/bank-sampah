@@ -12,12 +12,11 @@ class Pengepul extends Model
     protected $table = 'pengepul';
 
     protected $fillable = [
-        'nama', 'alamat', 'kontak'
+        'nama', 'alamat', 'kontak',
     ];
 
     public function pengiriman()
     {
         return $this->hasMany(PengirimanPengepul::class, 'pengepul_id');
     }
-
 }
